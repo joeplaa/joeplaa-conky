@@ -139,16 +139,18 @@ end
 -- return a process according to its CPU consumption
 function getProcessN(n)
     local name = parse("top name " .. n)
-    local value = parse("top cpu " .. n)
-    return name .. value .. "%"
+    local perc = parse("top cpu " .. n)
+    local time = parse("top time " .. n)
+    return name .. perc .. "% " .. time
 end
 
 
 -- return a process according to its memory consumption
 function getMemoryN(n)
     local name = parse("top_mem name " .. n)
-    local value = parse("top_mem mem_res " .. n)
-    return name .. value
+    local perc = parse("top_mem mem " .. n)
+    local amount = parse("top_mem mem_res " .. n)
+    return name .. perc .. '% ' .. amount
 end
 
 
@@ -222,59 +224,23 @@ local _local_ip          = "addr "                    .. br_interface
 function updates()              return parse("updates") end
 function kernel()               return parse("kernel") end                  --  ex: 5.10.32-1-lts
 function system_name()          return parse("sysname") end                 --  ex: Linux
+function hostname()             return parse("nodename") end                --  ex: Hostname
+function os()                   return parse("execi 86400 lsb_release -sd") end --  ex: Ubuntu 20.04.3 LTS
 function arch()                 return parse("machine") end                 --  ex: x86_64
 function desktops()             return parse("desktop_number") end          --  total number of desktops
 function desktop()              return parse("desktop") end                 --  ex: 3 (current desktop)
 function desktop_name()         return parse("desktop_name") end            --  ex: Desktop 3
 function username()             return parse("user_names") end
-function running_threads()      return parse("running_threads") end
-function memory()               return parse("mem") end
-function memory_percent()       return parse("memperc") end
-function memory_max()           return parse("memmax") end
-function memory_cached()        return parse("cached") end
-function memory_buffers()       return parse("buffers") end
-function swap()                 return parse("swap") end
-function swap_max()             return parse("swapmax") end
-function swap_percent()         return parse("swapperc") end
-function sys_temp_in()          return parse("hwmon 2 temp 1") end          --  temperature in C°
-function sys_temperature()      return parse("hwmon 2 temp 2") end          --  temperature in C°
-function sys_fanspeed1()        return parse("hwmon 2 fan 1") end           --  speed in RPM
-function sys_fanspeed2()        return parse("hwmon 2 fan 3") end           --  speed in RPM
-function download_speed()       return parse(_download_speed) end           --  ex: 930B or 3kb
-function download_speed_kb()    return parse(_download_speed_kb) end        --  ex: 0.9  or 3.0
-function download_total()       return parse(_download_total) end
-function upload_speed()         return parse(_upload_speed) end             --  ex: 930B or 3kb
-function upload_speed_kb()      return parse(_upload_speed_kb) end          --  ex: 0.9  or 3.0
-function upload_total()         return parse(_upload_total) end
-function local_ip()             return parse(_local_ip) end
-function uptime()               return parse("uptime") end                  --  ex: 2d 13h 40m
-function uptime_short()         return parse("uptime_short") end            --  ex: 2d 13h
-function time_hrmin()           return parse("time %R") end                 --  ex: 15:40
-function time_hrminsec()        return parse("time %T") end                 --  ex: 15:30:25
-function time_hr12minsec()      return parse("time %R") end                 --  ex: 03:30:25 PM
-function time_hour24()          return parse("time %H") end                 --  ex: 15
-function time_hour12()          return parse("time %I") end                 --  ex: 3
-function time_minute()          return parse("time %M") end                 --  ex: 30
-function time_second()          return parse("time %S") end                 --  ex: 25
-function time_am_pm_upper()     return parse("time %p") end                 --  ex: PM
-function time_am_pm_lower()     return parse("time %P") end                 --  ex: pm
-function time_day()             return parse("time %A") end                 --  ex: saturday
-function time_day_short()       return parse("time %a") end                 --  ex: sat
-function time_day_number()      return parse("time %d") end                 --  ex: 1
-function time_month()           return parse("time %H") end                 --  ex: january
-function time_month_short()     return parse("time %h") end                 --  ex: jan
-function time_month_number()    return parse("time %m") end                 --  ex: 1
-function time_year()            return parse("time %Y") end                 --  ex: 2021
-function time_year_short()      return parse("time %y") end                 --  ex: 21
-function utime()                return parse("utime") end                   --  UCT time --  ex: 2021-05-29 17:31:01
-function diskio(device)         return parse("diskio " .. "/dev/sda") end   --  device ex: /dev/sda
-function diskio_read(device)    return parse("diskio_read " .. "/dev/sda") end
-function diskio_write(device)   return parse("diskio_write " .. "/dev/sda") end
 function cpu_temperature()      return parse("hwmon 1 temp 1") end          --  temperature in C°
 function cpu_fanspeed()         return parse("hwmon 2 fan 2") end           --  speed in RPM
 function cpu_percent(n)
     if n == nil or n == "" then return parse("cpu") end
-    if n > 0 and n <= 8    then return parse("cpu cpu" .. n)
+    if n > 0 and n <= cpu_cores    then return parse("cpu cpu" .. n)
+    else                        return nil end
+end
+function cpu_freq(n)
+    if n == nil or n == "" then return parse("freq") end
+    if n > 0 and n <= cpu_cores    then return parse("freq " .. n)
     else                        return nil end
 end
 function ssd_temperature()      return parse("hddtemp /dev/sda") end        --  temperature in C°
@@ -303,6 +269,59 @@ function fs_free(fs)
     else                        return parse("fs_free " .. fs)
     end
 end
+function vm_used(vm)            return parse("execi 60 virsh vol-info " .. vm .. " --pool " .. pool_name .. " | grep Allocation | awk '{print$2 $3}'") end
+function vm_size(vm)            return parse("execi 60 virsh vol-info " .. vm .. " --pool " .. pool_name .. " | grep Capacity | awk '{print$2 $3}'") end
+function vm_used_perc(vm)
+    local allocation = tonumber(parse("execi 60 virsh vol-info " .. vm .. " --pool " .. pool_name .. " | grep Allocation | awk '{print$2}'"))
+    local capacity = tonumber(parse("execi 60 virsh vol-info " .. vm .. " --pool " .. pool_name .. " | grep Capacity | awk '{print$2}'"))
+    if allocation == nil or capacity == nil    then return 0
+    else                        return math.modf(allocation / capacity * 100)
+    end
+end
+function load_avg()             return parse("loadavg") end
+function running_threads()      return parse("running_threads") end
+function memory()               return parse("mem") end                     --  amount of memory in use
+function memory_percent()       return parse("memperc") end                 --  percentage of memory in use
+function memory_max()           return parse("memmax") end                  --  total amount of memory
+function memory_cached()        return parse("cached") end                  --  amount of memory cached
+function memory_buffers()       return parse("buffers") end                 --  amount of memory buffered
+function swap()                 return parse("swap") end
+function swap_max()             return parse("swapmax") end
+function swap_percent()         return parse("swapperc") end
+function sys_temp_in()          return parse("hwmon 2 temp 1") end          --  temperature in C°
+function sys_temperature()      return parse("hwmon 2 temp 2") end          --  temperature in C°
+function sys_fanspeed1()        return parse("hwmon 2 fan 1") end           --  speed in RPM
+function sys_fanspeed2()        return parse("hwmon 2 fan 3") end           --  speed in RPM
+function download_speed()       return parse(_download_speed) .. "/s" end   --  ex: 930B or 3kb
+function download_speed_kb()    return parse(_download_speed_kb) .. "/s" end --  ex: 0.9  or 3.0
+function download_total()       return parse(_download_total) end
+function upload_speed()         return parse(_upload_speed) .. "/s" end     --  ex: 930B or 3kb
+function upload_speed_kb()      return parse(_upload_speed_kb) .. "/s" end  --  ex: 0.9  or 3.0
+function upload_total()         return parse(_upload_total) end
+function local_ip()             return parse(_local_ip) end
+function uptime()               return parse("uptime") end                  --  ex: 2d 13h 40m
+function uptime_short()         return parse("uptime_short") end            --  ex: 2d 13h
+function time_hrmin()           return parse("time %R") end                 --  ex: 15:40
+function time_hrminsec()        return parse("time %T") end                 --  ex: 15:30:25
+function time_hr12minsec()      return parse("time %R") end                 --  ex: 03:30:25 PM
+function time_hour24()          return parse("time %H") end                 --  ex: 15
+function time_hour12()          return parse("time %I") end                 --  ex: 3
+function time_minute()          return parse("time %M") end                 --  ex: 30
+function time_second()          return parse("time %S") end                 --  ex: 25
+function time_am_pm_upper()     return parse("time %p") end                 --  ex: PM
+function time_am_pm_lower()     return parse("time %P") end                 --  ex: pm
+function time_day()             return parse("time %A") end                 --  ex: saturday
+function time_day_short()       return parse("time %a") end                 --  ex: sat
+function time_day_number()      return parse("time %d") end                 --  ex: 1
+function time_month()           return parse("time %H") end                 --  ex: january
+function time_month_short()     return parse("time %h") end                 --  ex: jan
+function time_month_number()    return parse("time %m") end                 --  ex: 1
+function time_year()            return parse("time %Y") end                 --  ex: 2021
+function time_year_short()      return parse("time %y") end                 --  ex: 21
+function utime()                return parse("utime") end                   --  UCT time --  ex: 2021-05-29 17:31:01
+function diskio(device)         return parse("diskio " .. device) .. "/s" end   --  device ex: /dev/sda
+function diskio_read(device)    return parse("diskio_read " .. device) .. "/s" end
+function diskio_write(device)   return parse("diskio_write " .. device) .. "/s" end
 function fetch_public_ip()
     local po = io.popen("wget http://ipinfo.io/ip -qO -")
     -- local po = io.popen("curl -s ifconfig.me/ip")

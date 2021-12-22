@@ -42,6 +42,11 @@ download_rate_maximum = 5000     -- kb
 upload_rate_maximum   = 5000     -- kb
 
 --[[
+KVM/QEMU/Libvirt pool name
+]]
+pool_name = 'default'
+
+--[[
 Default font used by the convinient functions like write() and write_bold()
 You can use _write() to choose another font
 ]]
@@ -187,7 +192,7 @@ main_text_color = color5
 -- threshold variables are used to change the colors of the indicators
 -- by using the functions color_frompercent(perc) and color_frompercent_reverse(perc)
 threshold_warning          = 70
-threshold_critical         = 90
+threshold_critical         = 85
 
 color_normal               = main_fg
 color_warning              = nil
