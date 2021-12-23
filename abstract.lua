@@ -11,7 +11,6 @@ require "cairo"
 require "imlib2"
 require "settings"
 
-
 function image(x, y, file)
     if file == nil then return end
 
@@ -115,22 +114,34 @@ function rectangle_upbottom(x, y, len, thick, value_str, max_value, color)
 end
 
 
-function write(x, y, text, font_size, color)
-    _write_(x, y, text, main_font, font_size, color, 1, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL)
+function write(x, y, text, font_size, color, align)
+    _write_(x, y, text, main_font, font_size, color, 1, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL, align)
 end
 
 
-function write_bold(x, y, text, font_size, color)
-    -- convinience function to write in bold font
-    _write_(x, y, text, main_font, font_size, color, 1, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD)
+function write_bold(x, y, text, font_size, color, align)
+    -- convenience function to write in bold font
+    _write_(x, y, text, main_font, font_size, color, 1, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD, align)
 end
 
 
-function _write_(x, y, text, font_name, font_size, color, alpha, font_slant, font_face)
+function _write_(x, y, text, font_name, font_size, color, alpha, font_slant, font_face, align)
     cairo_select_font_face (cr, font_name, font_slant, font_face);
     cairo_set_font_size (cr, font_size)
     cairo_set_source_rgba (cr, color_convert(color, alpha))
-    cairo_move_to (cr, x, y)
+
+    local x_align
+    local extents = cairo_text_extents_t:create()
+    tolua.takeownership(extents)
+    cairo_text_extents(cr, text, extents)
+
+    if align == "l" then x_align = x                                                   -- align left
+    elseif align == "c" then x_align = x / 2 - (extents.width / 2 + extents.x_bearing) -- align center
+    elseif align == "r" then x_align = x - (extents.width + extents.x_bearing)         -- align right
+    else x_align = x                                                                   -- align left (default)
+    end
+
+    cairo_move_to (cr, x_align, y)
     cairo_show_text (cr, text)
     cairo_stroke (cr)
 end
@@ -209,16 +220,6 @@ function color_convert(colour, alpha)
 	return ((colour / 0x10000) % 0x100) / 255., ((colour / 0x100) % 0x100) / 255., (colour % 0x100) / 255., alpha
 end
 
-
--- Variable definitions to avoir repeating the same string concatenations
-local _download_speed    = "downspeed "               .. net_interface
-local _download_speed_kb = "downspeedf "              .. net_interface
-local _download_total    = "totaldown "               .. net_interface
-local _upload_speed      = "upspeed "                 .. net_interface
-local _upload_speed_kb   = "upspeedf "                .. net_interface
-local _upload_total      = "totalup "                 .. net_interface
-local _local_ip          = "addr "                    .. br_interface
-
 -- functions to fetch some important system info
 -- for other variables, see: <http://conky.sourceforge.net/variables.html>
 function updates()              return parse("updates") end
@@ -278,50 +279,40 @@ function vm_used_perc(vm)
     else                        return math.modf(allocation / capacity * 100)
     end
 end
-function load_avg()             return parse("loadavg") end
+function load_avg()             return parse("loadavg") end                             --  system load averages
 function running_threads()      return parse("running_threads") end
-function memory()               return parse("mem") end                     --  amount of memory in use
-function memory_percent()       return parse("memperc") end                 --  percentage of memory in use
-function memory_max()           return parse("memmax") end                  --  total amount of memory
-function memory_cached()        return parse("cached") end                  --  amount of memory cached
-function memory_buffers()       return parse("buffers") end                 --  amount of memory buffered
+function memory()               return parse("mem") end                                 --  amount of memory in use
+function memory_percent()       return parse("memperc") end                             --  percentage of memory in use
+function memory_max()           return parse("memmax") end                              --  total amount of memory
+function memory_cached()        return parse("cached") end                              --  amount of memory cached
+function memory_buffers()       return parse("buffers") end                             --  amount of memory buffered
 function swap()                 return parse("swap") end
 function swap_max()             return parse("swapmax") end
 function swap_percent()         return parse("swapperc") end
-function sys_temp_in()          return parse("hwmon 2 temp 1") end          --  temperature in C°
-function sys_temperature()      return parse("hwmon 2 temp 2") end          --  temperature in C°
-function sys_fanspeed1()        return parse("hwmon 2 fan 1") end           --  speed in RPM
-function sys_fanspeed2()        return parse("hwmon 2 fan 3") end           --  speed in RPM
-function download_speed()       return parse(_download_speed) .. "/s" end   --  ex: 930B or 3kb
-function download_speed_kb()    return parse(_download_speed_kb) .. "/s" end --  ex: 0.9  or 3.0
-function download_total()       return parse(_download_total) end
-function upload_speed()         return parse(_upload_speed) .. "/s" end     --  ex: 930B or 3kb
-function upload_speed_kb()      return parse(_upload_speed_kb) .. "/s" end  --  ex: 0.9  or 3.0
-function upload_total()         return parse(_upload_total) end
-function local_ip()             return parse(_local_ip) end
-function uptime()               return parse("uptime") end                  --  ex: 2d 13h 40m
-function uptime_short()         return parse("uptime_short") end            --  ex: 2d 13h
-function time_hrmin()           return parse("time %R") end                 --  ex: 15:40
-function time_hrminsec()        return parse("time %T") end                 --  ex: 15:30:25
-function time_hr12minsec()      return parse("time %R") end                 --  ex: 03:30:25 PM
-function time_hour24()          return parse("time %H") end                 --  ex: 15
-function time_hour12()          return parse("time %I") end                 --  ex: 3
-function time_minute()          return parse("time %M") end                 --  ex: 30
-function time_second()          return parse("time %S") end                 --  ex: 25
-function time_am_pm_upper()     return parse("time %p") end                 --  ex: PM
-function time_am_pm_lower()     return parse("time %P") end                 --  ex: pm
-function time_day()             return parse("time %A") end                 --  ex: saturday
-function time_day_short()       return parse("time %a") end                 --  ex: sat
-function time_day_number()      return parse("time %d") end                 --  ex: 1
-function time_month()           return parse("time %H") end                 --  ex: january
-function time_month_short()     return parse("time %h") end                 --  ex: jan
-function time_month_number()    return parse("time %m") end                 --  ex: 1
-function time_year()            return parse("time %Y") end                 --  ex: 2021
-function time_year_short()      return parse("time %y") end                 --  ex: 21
-function utime()                return parse("utime") end                   --  UCT time --  ex: 2021-05-29 17:31:01
-function diskio(device)         return parse("diskio " .. device) .. "/s" end   --  device ex: /dev/sda
+function sys_temp_in()          return parse("hwmon 2 temp 1") end                      --  temperature in C°
+function sys_temperature()      return parse("hwmon 2 temp 2") end                      --  temperature in C°
+function sys_fanspeed1()        return parse("hwmon 2 fan 1") end                       --  speed in RPM
+function sys_fanspeed2()        return parse("hwmon 2 fan 3") end                       --  speed in RPM
+function download_speed()       return parse("downspeed " .. net_interface) .. "/s" end --  ex: 930B or 3kb
+function download_total()       return parse("totaldown " .. net_interface) end
+function downspeedgraph()       return parse("downspeedgraph" .. net_interface) end
+function upload_speed()         return parse("upspeed " .. net_interface) .. "/s" end   --  ex: 930B or 3kb
+function upload_total()         return parse("totalup " .. net_interface) end
+function upspeedgraph()         return parse("upspeedgraph" .. net_interface) end
+function local_ip()             return parse("addr " .. br_interface) end               --  ex: 192.168.178.25
+function uptime()               return parse("uptime") end                              --  ex: 2d 13h 40m
+function time_hrmin()           return parse("time %R") end                             --  ex: 15:40
+function time_hrminsec()        return parse("time %T") end                             --  ex: 15:30:25
+function time_day()             return parse("time %A") end                             --  ex: saturday
+function time_day_short()       return parse("time %a") end                             --  ex: sat
+function time_month()           return parse("time %B") end                             --  ex: january
+function time_month_short()     return parse("time %b") end                             --  ex: jan
+function time_month_number()    return parse("time %d") end                             --  ex: 1
+function time_year()            return parse("time %Y") end                             --  ex: 2021
+function diskio(device)         return parse("diskio " .. device) .. "/s" end           --  device ex: /dev/sda
 function diskio_read(device)    return parse("diskio_read " .. device) .. "/s" end
 function diskio_write(device)   return parse("diskio_write " .. device) .. "/s" end
+function diskiograph(device)    return parse("diskiograph " .. device) .. "/s" end      --  device ex: /dev/sda
 function fetch_public_ip()
     local po = io.popen("wget http://ipinfo.io/ip -qO -")
     -- local po = io.popen("curl -s ifconfig.me/ip")
