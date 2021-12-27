@@ -234,7 +234,7 @@ end
 
 function draw_net()
     write_bold(settings.line.endx, settings.net.separator + settings.line.height / 2, "NETWORK", 12, main_text_color)
-    line(settings.line.startx, settings.net.separator, settings.line.endx + 96, settings.net.separator, settings.line.thickness, main_text_color, 1)
+    line(settings.line.startx, settings.net.separator, settings.line.endx + 60, settings.net.separator, settings.line.thickness, main_text_color, 1)
 
     -- info
     local vals = {
