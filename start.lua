@@ -68,9 +68,8 @@ settings.mem.y_info             = settings.mem.y_swap + settings.line.interval
 settings.disk.separator         = settings.mem.y_info + settings.line.interval * 3.5
 settings.disk.y                 = settings.disk.separator + settings.line.interval
 settings.disk.y1                = settings.disk.separator + settings.line.section_interval
-settings.disk.y2                = settings.disk.y1 + settings.line.interval
 
-settings.net.separator          = settings.disk.y2 + settings.line.interval
+settings.net.separator          = settings.disk.y1 + settings.line.interval * 1.5
 settings.net.y                  = settings.net.separator + settings.line.interval
 settings.net.y1                 = settings.net.separator + settings.line.section_interval
 settings.net.y2                 = settings.net.y1 + settings.line.interval
@@ -214,22 +213,18 @@ function draw_disks()
 
     --local ssdtemp       = ssd_temperature()
     local root          = string.format("SSD: %s / %s", fs_used("/"), fs_size("/"))
-    local win10         = string.format("VM WIN10: %s / %s", vm_used("win10.qcow2"), vm_size("win10.qcow2"))
     local rootperc      = fs_used_perc("/")
-    local win10perc     = vm_used_perc("win10.qcow2")
 
-    --rectangle_rightleft(settings.line.startx, settings.disk.y_temp, settings.disk.width_temp, settings.line.thickness, ssdtemp, 70, color_frompercent(tonumber(ssdtemp)/70))
     rectangle_rightleft(settings.line.startx, settings.disk.y1, settings.line.width1, settings.line.thickness, rootperc, 100, color_frompercent(tonumber(rootperc)))
-    rectangle_rightleft(settings.line.startx, settings.disk.y2, settings.line.width1, settings.line.thickness, win10perc, 100, color_frompercent(tonumber(win10perc)))
+    --rectangle_rightleft(settings.line.startx, settings.disk.y2, settings.line.width1, settings.line.thickness, win10perc, 100, color_frompercent(tonumber(win10perc)))
 
     -- values
     write(settings.text.centerxr, settings.disk.y1 - settings.line.height, rootperc .. "%", 12, main_text_color)
-    write(settings.text.centerxr, settings.disk.y2 - settings.line.height, win10perc .. "%", 12, main_text_color)
+    --write(settings.text.centerxr, settings.disk.y2 - settings.line.height, win10perc .. "%", 12, main_text_color)
 
     -- titles
-    --write(settings.text.startx, settings.disk.y1 - settings.line.height, ssdtemp, 12, main_text_color, "r")
     write(settings.text.startx, settings.disk.y1 - settings.line.height, root, 12, main_text_color, "r")
-    write(settings.text.startx, settings.disk.y2 - settings.line.height, win10, 12, main_text_color, "r")
+    --write(settings.text.startx, settings.disk.y2 - settings.line.height, win10, 12, main_text_color, "r")
 end
 
 function draw_net()
