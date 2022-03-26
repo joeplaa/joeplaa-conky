@@ -104,22 +104,22 @@ function draw_info()
     write_line_by_line(settings.text.endx, settings.info.y, 20, vals, main_text_color, 12, false)
 
     local systemp   = sys_temperature()
-    local sysfan1   = sys_fanspeed1()
-    local sysfan2   = sys_fanspeed2()
+    --local sysfan1   = sys_fanspeed1()
+    --local sysfan2   = sys_fanspeed2()
 
     rectangle_rightleft(settings.line.startx, settings.info.y_temp, settings.line.width1, settings.line.thickness, systemp, 70, color_frompercent(tonumber(systemp/70)))
-    rectangle_rightleft(settings.line.startx, settings.info.y_fan1, settings.line.width1, settings.line.thickness, sysfan1, 1150, color_frompercent(tonumber(sysfan1/1150)))
-    rectangle_rightleft(settings.line.startx, settings.info.y_fan2, settings.line.width1, settings.line.thickness, sysfan2, 1250, color_frompercent(tonumber(sysfan2/1250)))
+    --rectangle_rightleft(settings.line.startx, settings.info.y_fan1, settings.line.width1, settings.line.thickness, sysfan1, 1150, color_frompercent(tonumber(sysfan1/1150)))
+    --rectangle_rightleft(settings.line.startx, settings.info.y_fan2, settings.line.width1, settings.line.thickness, sysfan2, 1250, color_frompercent(tonumber(sysfan2/1250)))
 
     -- values
     write(settings.text.centerxr, settings.info.y_temp - settings.line.height, systemp .. "°C", 12, main_text_color)
-    write(settings.text.centerxr, settings.info.y_fan1 - settings.line.height, sysfan1 .. " RPM", 12, main_text_color)
-    write(settings.text.centerxr, settings.info.y_fan2 - settings.line.height, sysfan2 .. " RPM", 12, main_text_color)
+    --write(settings.text.centerxr, settings.info.y_fan1 - settings.line.height, sysfan1 .. " RPM", 12, main_text_color)
+    --write(settings.text.centerxr, settings.info.y_fan2 - settings.line.height, sysfan2 .. " RPM", 12, main_text_color)
 
     -- titles
     write(settings.text.startx, settings.info.y_temp - settings.line.height, "System temperature", 12, main_text_color, "r")
-    write(settings.text.startx, settings.info.y_fan1 - settings.line.height, "System fan 1 speed", 12, main_text_color, "r")
-    write(settings.text.startx, settings.info.y_fan2 - settings.line.height, "System fan 2 speed", 12, main_text_color, "r")
+    --write(settings.text.startx, settings.info.y_fan1 - settings.line.height, "System fan 1 speed", 12, main_text_color, "r")
+    --write(settings.text.startx, settings.info.y_fan2 - settings.line.height, "System fan 2 speed", 12, main_text_color, "r")
 end
 
 function draw_cpu()
@@ -135,11 +135,11 @@ function draw_cpu()
     write_list_proccesses_cpu(settings.text.endx, settings.cpu.y_fan + 2 * settings.line.interval, 20, 10, 12, main_text_color)
 
     local cputemp       = cpu_temperature()
-    local cpufanspeed   = cpu_fanspeed()
+    --local cpufanspeed   = cpu_fanspeed()
     local cpu           = cpu_percent()
 
     rectangle_rightleft(settings.line.centerx, settings.cpu.y_temp, settings.line.width1, settings.line.thickness, cputemp, 80, color_frompercent(tonumber(cputemp/80)))
-    rectangle_rightleft(settings.line.centerx, settings.cpu.y_fan, settings.line.width1, settings.line.thickness, cpufanspeed, 1550, color_frompercent(tonumber(cpufanspeed/1550)))
+    --rectangle_rightleft(settings.line.centerx, settings.cpu.y_fan, settings.line.width1, settings.line.thickness, cpufanspeed, 1550, color_frompercent(tonumber(cpufanspeed/1550)))
     for i = 1, cpu_cores do
         y = settings.cpu.y_temp + (i - 1) * settings.line.interval
         rectangle_rightleft(settings.line.startx, y, settings.line.width1, settings.line.thickness, cpu_percent(i), 100, color_frompercent(tonumber(cpu_percent(i))))
@@ -148,7 +148,7 @@ function draw_cpu()
 
     -- values
     write(settings.text.endx, settings.cpu.y_temp - settings.line.height, cputemp .. "°C", 12, main_text_color)
-    write(settings.text.endx, settings.cpu.y_fan - settings.line.height, cpufanspeed .. " RPM", 12, main_text_color)
+    --write(settings.text.endx, settings.cpu.y_fan - settings.line.height, cpufanspeed .. " RPM", 12, main_text_color)
     for i = 1, cpu_cores do
         y = settings.cpu.y_temp + (i - 1) * settings.line.interval - settings.line.height
         write(settings.text.centerxr, y, cpu_percent(i) .. "%", 12, main_text_color)
@@ -157,7 +157,7 @@ function draw_cpu()
 
     -- titles
     write(settings.text.centerxl, settings.cpu.y_temp - settings.line.height, "CPU temperature", 12, main_text_color, "r")
-    write(settings.text.centerxl, settings.cpu.y_fan - settings.line.height, "CPU fan speed", 12, main_text_color, "r")
+    --write(settings.text.centerxl, settings.cpu.y_fan - settings.line.height, "CPU fan speed", 12, main_text_color, "r")
     for i = 1, cpu_cores do
         y = settings.cpu.y_temp + (i - 1) * settings.line.interval - settings.line.height
         write(settings.text.startx, y, "CPU " .. i .. ": " .. cpu_freq(i) .. " MHz", 12, main_text_color, "r")
