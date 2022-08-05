@@ -132,22 +132,22 @@ function draw_info()
     write_line_by_line(settings.text.endx, settings.info.y, settings.line.info_height, vals, main_text_color, 12, false)
 
     local systemp   = sys_temperature()
-    --local sysfan1   = sys_fanspeed1()
-    --local sysfan2   = sys_fanspeed2()
+    local sysfan1   = sys_fanspeed1()
+    local sysfan2   = sys_fanspeed2()
 
     rectangle_rightleft(settings.line.startx, settings.info.y_temp, settings.line.width_2, settings.line.thickness, systemp, 70, color_frompercent(tonumber(systemp/70)))
-    --rectangle_rightleft(settings.line.startx, settings.info.y_fan1, settings.line.width_2, settings.line.thickness, sysfan1, 1150, color_frompercent(tonumber(sysfan1/1150)))
-    --rectangle_rightleft(settings.line.startx, settings.info.y_fan2, settings.line.width_2, settings.line.thickness, sysfan2, 1250, color_frompercent(tonumber(sysfan2/1250)))
+    rectangle_rightleft(settings.line.startx, settings.info.y_fan1, settings.line.width_2, settings.line.thickness, sysfan1, 1150, color_frompercent(tonumber(sysfan1/1150)))
+    rectangle_rightleft(settings.line.startx, settings.info.y_fan2, settings.line.width_2, settings.line.thickness, sysfan2, 1250, color_frompercent(tonumber(sysfan2/1250)))
 
     -- values
     write(settings.text.centerxr, settings.info.y_temp - settings.line.height, systemp .. "°C", 12, main_text_color)
-    --write(settings.text.centerxr, settings.info.y_fan1 - settings.line.height, sysfan1 .. " RPM", 12, main_text_color)
-    --write(settings.text.centerxr, settings.info.y_fan2 - settings.line.height, sysfan2 .. " RPM", 12, main_text_color)
+    write(settings.text.centerxr, settings.info.y_fan1 - settings.line.height, sysfan1 .. " RPM", 12, main_text_color)
+    write(settings.text.centerxr, settings.info.y_fan2 - settings.line.height, sysfan2 .. " RPM", 12, main_text_color)
 
     -- titles
     write(settings.text.startx, settings.info.y_temp - settings.line.height, "System temperature", 12, main_text_color, "r")
-    --write(settings.text.startx, settings.info.y_fan1 - settings.line.height, "System fan 1 speed", 12, main_text_color, "r")
-    --write(settings.text.startx, settings.info.y_fan2 - settings.line.height, "System fan 2 speed", 12, main_text_color, "r")
+    write(settings.text.startx, settings.info.y_fan1 - settings.line.height, "System fan 1 speed", 12, main_text_color, "r")
+    write(settings.text.startx, settings.info.y_fan2 - settings.line.height, "System fan 2 speed", 12, main_text_color, "r")
 end
 
 function draw_cpu()
