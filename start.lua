@@ -41,7 +41,7 @@ settings.text.centerxr          = settings.base.x / 2 + settings.base.margin    
 settings.text.endx              = settings.base.margin * 1.5                    -- left
 
 settings.clock.time_x           = settings.base.x
-settings.clock.time_y           = settings.base.y + settings.line.interval * 2
+settings.clock.time_y           = settings.base.y + settings.line.interval * 1.5
 settings.clock.date_x           = settings.clock.time_x
 settings.clock.date_y           = settings.clock.time_y + 30
 
@@ -51,7 +51,7 @@ settings.info.y_temp            = settings.info.separator + settings.line.sectio
 settings.info.y_fan1            = settings.info.y_temp + settings.line.interval
 settings.info.y_fan2            = settings.info.y_fan1 + settings.line.interval
 
-settings.cpu.separator          = settings.info.y_fan2 + settings.line.interval
+settings.cpu.separator          = settings.info.y_fan2 + settings.line.interval * .5
 settings.cpu.y                  = settings.cpu.separator
 settings.cpu.y_temp             = settings.cpu.y + settings.line.section_interval
 settings.cpu.y_fan              = settings.cpu.y_temp + settings.line.interval
@@ -65,7 +65,7 @@ settings.mem.y_ram              = settings.mem.separator + settings.line.section
 settings.mem.y_swap             = settings.mem.y_ram + settings.line.interval
 settings.mem.y_info             = settings.mem.y_swap + settings.line.interval
 
-settings.disk.separator         = settings.mem.y_info + settings.line.interval * 3.5
+settings.disk.separator         = settings.mem.y_info + settings.line.interval * 3.25
 settings.disk.y                 = settings.disk.separator + settings.line.interval
 settings.disk.y1                = settings.disk.separator + settings.line.section_interval
 
