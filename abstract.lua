@@ -341,4 +341,8 @@ function dell_fan_speed(ip, user, pw, fan) return parse("execi 60 ipmitool -I la
 function hp_cpu1_temp(ip, user, pw) return parse("execi 60 ipmitool -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sdr type temperature | grep 04h | cut -d'|' -f5 | cut -d' ' -f2") end
 function hp_cpu2_temp(ip, user, pw) return parse("execi 60 ipmitool -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sdr type temperature | grep 05h | cut -d'|' -f5 | cut -d' ' -f2") end
 function hp_inlet_temp(ip, user, pw) return parse("execi 60 ipmitool -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sdr type temperature | grep 03h | cut -d'|' -f5 | cut -d' ' -f2") end
-function hp_fan_speed(ip, user, pw, fan) return parse("execi 60 ipmitool -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sensor reading " .. fan .. " | awk '{ print $NF }'") end
+function hp_fan_speed(ip, user, pw, fan)
+    local fanspeed = parse("execi 60 ipmitool -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sensor reading " .. fan .. " | awk '{ print $NF }'")
+    local fs1, fs2 = fanspeed:match("([^.]+).([^.]+)")
+    return tonumber(fs1) / 100 + tonumber(fs2) / 10000
+end
