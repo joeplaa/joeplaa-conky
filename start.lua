@@ -35,8 +35,9 @@ settings.base.y                 = 40
 settings.line.thickness         = 2
 settings.line.height            = 10
 settings.line.info_height       = 20
-settings.line.width_2           = (settings.base.x - 3 * settings.base.margin) / 2 -- line lenght (2 columns)
-settings.line.width_3           = (settings.base.x - 4 * settings.base.margin) / 3 -- line lenght (3 columns)
+settings.line.width_2           = (settings.base.x - 3 * settings.base.margin) / 2 -- line length (2 columns)
+settings.line.width_3           = (settings.base.x - 4 * settings.base.margin) / 3 -- line length (3 columns)
+settings.line.width_4           = settings.line.width_3 * 2 + settings.base.margin -- line length (2/3 width)
 settings.line.startx            = settings.base.x - settings.base.margin           -- right
 settings.line.centerxr          = settings.line.startx - settings.line.width_2     -- right of center; left of the right column (2 columns)
 settings.line.centerxl          = settings.line.centerxr - settings.base.margin    -- left of center; right of the left column (2 columns)
@@ -232,9 +233,9 @@ function draw_disks()
 
     -- info
     local vals = {
-        "Disk I/O:  " .. diskio("/dev/sda"),
-        "  Read:    " .. diskio_read("/dev/sda"),
-        "  Write:   " .. diskio_write("/dev/sda"),
+        "Disk I/O:   " .. diskio("/dev/sda"),
+        "  Read:     " .. diskio_read("/dev/sda"),
+        "  Write:    " .. diskio_write("/dev/sda"),
     }
     write_line_by_line(settings.text.endx, settings.disk.y_info, settings.line.info_height, vals, main_text_color, 12, false)
 
@@ -242,10 +243,10 @@ function draw_disks()
     local root          = string.format("SSD: %s / %s", fs_used("/"), fs_size("/"))
     local rootperc      = fs_used_perc("/")
 
-    rectangle_rightleft(settings.line.startx, settings.disk.y_ssd, settings.line.width_2, settings.line.thickness, rootperc, 100, color_frompercent(tonumber(rootperc)))
+    rectangle_rightleft(settings.line.startx, settings.disk.y_ssd, settings.line.width_4, settings.line.thickness, rootperc, 100, color_frompercent(tonumber(rootperc)))
 
     -- values
-    write(settings.text.centerxr, settings.disk.y_ssd - settings.line.height, rootperc .. "%", 12, main_text_color)
+    write(settings.text.midxl, settings.disk.y_ssd - settings.line.height, rootperc .. "%", 12, main_text_color)
 
     -- titles
     write(settings.text.startx, settings.disk.y_ssd - settings.line.height, root, 12, main_text_color, "r")
@@ -258,10 +259,10 @@ function draw_net()
     -- info
     local vals = {
         "Net speed:",
-        "  Download:     " .. download_speed(),
-        "  Upload:       " .. upload_speed(),
-        "Total download: " .. download_total(),
-        "Total upload:   " .. upload_total(),
+        "  Down:     " .. download_speed(),
+        "  Up:       " .. upload_speed(),
+        "Total down: " .. download_total(),
+        "Total up:   " .. upload_total(),
     }
     if use_public_ip then
         table.insert(vals, "Public IP: " .. public_ip)
@@ -276,14 +277,14 @@ function draw_net()
     local joediapnaperc = fs_used_perc("/media/joediapna-share")
     local userperc      = fs_used_perc("/media/joep")
 
-    rectangle_rightleft(settings.line.startx, settings.net.y_sh1, settings.line.width_2, settings.line.thickness, jodibooksperc, 100, color_frompercent(tonumber(jodibooksperc)))
-    rectangle_rightleft(settings.line.startx, settings.net.y_sh2, settings.line.width_2, settings.line.thickness, joediapnaperc, 100, color_frompercent(tonumber(joediapnaperc)))
-    rectangle_rightleft(settings.line.startx, settings.net.y_sh3, settings.line.width_2, settings.line.thickness, userperc, 100, color_frompercent(tonumber(userperc)))
+    rectangle_rightleft(settings.line.startx, settings.net.y_sh1, settings.line.width_4, settings.line.thickness, jodibooksperc, 100, color_frompercent(tonumber(jodibooksperc)))
+    rectangle_rightleft(settings.line.startx, settings.net.y_sh2, settings.line.width_4, settings.line.thickness, joediapnaperc, 100, color_frompercent(tonumber(joediapnaperc)))
+    rectangle_rightleft(settings.line.startx, settings.net.y_sh3, settings.line.width_4, settings.line.thickness, userperc, 100, color_frompercent(tonumber(userperc)))
 
     -- values
-    write(settings.text.centerxr, settings.net.y_sh1 - settings.line.height, jodibooksperc .. "%", 12, main_text_color)
-    write(settings.text.centerxr, settings.net.y_sh2 - settings.line.height, joediapnaperc .. "%", 12, main_text_color)
-    write(settings.text.centerxr, settings.net.y_sh3 - settings.line.height, userperc .. "%", 12, main_text_color)
+    write(settings.text.midxl, settings.net.y_sh1 - settings.line.height, jodibooksperc .. "%", 12, main_text_color)
+    write(settings.text.midxl, settings.net.y_sh2 - settings.line.height, joediapnaperc .. "%", 12, main_text_color)
+    write(settings.text.midxl, settings.net.y_sh3 - settings.line.height, userperc .. "%", 12, main_text_color)
 
     -- titles
     write(settings.text.startx, settings.net.y_sh1 - settings.line.height, jodibooks, 12, main_text_color, "r")
