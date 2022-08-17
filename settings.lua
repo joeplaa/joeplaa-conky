@@ -33,7 +33,6 @@ You can find out by executing `ifconfig` or `ip link`.
 It might be "wlan0", "eth0", "wlp3s0" or something else
 ]]
 net_interface = "eno1"
-br_interface = "bridge0"
 
 --[[
 this depends on your own internet speed

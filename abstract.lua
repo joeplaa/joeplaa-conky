@@ -299,7 +299,7 @@ function downspeedgraph()       return parse("downspeedgraph" .. net_interface) 
 function upload_speed()         return parse("upspeed " .. net_interface) .. "/s" end   --  ex: 930B or 3kb
 function upload_total()         return parse("totalup " .. net_interface) end
 function upspeedgraph()         return parse("upspeedgraph" .. net_interface) end
-function local_ip()             return parse("addr " .. br_interface) end               --  ex: 192.168.178.25
+function local_ip()             return parse("addr " .. net_interface) end               --  ex: 192.168.178.25
 function uptime()               return parse("uptime") end                              --  ex: 2d 13h 40m
 function time_hrmin()           return parse("time %R") end                             --  ex: 15:40
 function time_hrminsec()        return parse("time %T") end                             --  ex: 15:30:25
