@@ -92,7 +92,7 @@ settings.net.y_sh1              = settings.net.separator + settings.line.interva
 settings.net.y_sh2              = settings.net.y_sh1 + settings.line.interval
 settings.net.y_sh3              = settings.net.y_sh2 + settings.line.interval
 
-settings.server.separator       = settings.net.y_info + 7 * settings.line.info_height
+settings.server.separator       = settings.net.y_info + 8 * settings.line.info_height
 settings.server.y_inlet         = settings.server.separator + settings.line.interval
 settings.server.y_temp1a        = settings.server.y_inlet + settings.line.interval
 settings.server.y_temp1b        = settings.server.y_temp1a + settings.line.interval
@@ -266,6 +266,7 @@ function draw_net()
     }
     if use_public_ip then
         table.insert(vals, "Public IP: " .. public_ip)
+        table.insert(vals, "VPN IP:    " .. vpn_ip)
     end
     table.insert(vals, "Local IP:  " .. local_ip())
     write_line_by_line(settings.text.endx, settings.net.y_info, settings.line.info_height, vals, main_text_color, 12, false)
@@ -369,6 +370,9 @@ function conky_main()
         if use_public_ip then
             if public_ip == nil or public_ip == "None" or (number_updates%public_ip_refresh_rate) == 0 then
                 public_ip = fetch_public_ip()
+            end
+            if vpn_ip == nil or vpn_ip == "None" or (number_updates%public_ip_refresh_rate) == 0 then
+                vpn_ip = fetch_vpn_ip()
             end
         end
 

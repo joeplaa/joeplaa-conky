@@ -60,6 +60,7 @@ which is called every `public_ip_refresh_rate` secondes
 use_public_ip = true
 public_ip_refresh_rate = 60     -- secondes
 public_ip = nil
+vpn_ip = nil
 
 ----------------------------------------------
 

@@ -325,6 +325,15 @@ function fetch_public_ip()
         return content
     end
 end
+function fetch_vpn_ip()
+    local po = io.popen("curl -s ifconfig.me/ip")
+    local content = po:read("*a")
+    if content == nil or content == "" or string.len(content) > 15  then
+        return "None"
+    else
+        return content
+    end
+end
 --Dell servers
 --TEMP_SENSOR="04h"  # Inlet Temp
 --TEMP_SENSOR="01h"  # Exhaust Temp
