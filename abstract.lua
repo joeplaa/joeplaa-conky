@@ -326,7 +326,7 @@ function fetch_public_ip()
     end
 end
 function fetch_vpn_ip()
-    local po = io.popen("curl -s ifconfig.me/ip")
+    local po = io.popen("curl -s ident.me")
     local content = po:read("*a")
     if content == nil or content == "" or string.len(content) > 15  then
         return "None"
