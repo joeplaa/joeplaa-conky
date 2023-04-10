@@ -300,58 +300,46 @@ function draw_server()
     local cputemp1a  = hp_cpu1_temp("10.33.10.100", "ipmi_user", "pBjwGJ6Z9MD7msBV8Ym9")
     local cputemp1b  = hp_cpu2_temp("10.33.10.100", "ipmi_user", "pBjwGJ6Z9MD7msBV8Ym9")
     local cputemp2   = dell_cpu_temp("10.33.10.101", "ipmi_user", "fwCX4MCvjz3N5mRRtUBx")
-    local cputemp3   = dell_cpu_temp("10.33.10.102", "ipmi_user", "dY9ZR9b6w5yqq5BY39g2")
     local inlettemp1 = hp_inlet_temp("10.33.10.100", "ipmi_user", "pBjwGJ6Z9MD7msBV8Ym9")
     local inlettemp2 = dell_inlet_temp("10.33.10.101", "ipmi_user", "fwCX4MCvjz3N5mRRtUBx")
-    local inlettemp3 = dell_inlet_temp("10.33.10.102", "ipmi_user", "dY9ZR9b6w5yqq5BY39g2")
     local fanspeed1a = hp_fan_speed("10.33.10.100", "ipmi_user", "pBjwGJ6Z9MD7msBV8Ym9", "'Fan 1'")
     local fanspeed1b = hp_fan_speed("10.33.10.100", "ipmi_user", "pBjwGJ6Z9MD7msBV8Ym9", "'Fan 3'")
     local fanspeed2  = dell_fan_speed("10.33.10.101", "ipmi_user", "fwCX4MCvjz3N5mRRtUBx", "'Sys Fan1'")
-    local fanspeed3  = dell_fan_speed("10.33.10.102", "ipmi_user", "dY9ZR9b6w5yqq5BY39g2", "Fan2A")
 
     rectangle_rightleft(settings.line.leftxr, settings.server.y_inlet, settings.line.width_3, settings.line.thickness, inlettemp1, 40, color_frompercent(tonumber(inlettemp1/40)))
     rectangle_rightleft(settings.line.midxr, settings.server.y_inlet, settings.line.width_3, settings.line.thickness, inlettemp2, 40, color_frompercent(tonumber(inlettemp2/40)))
-    rectangle_rightleft(settings.line.startx, settings.server.y_inlet, settings.line.width_3, settings.line.thickness, inlettemp3, 40, color_frompercent(tonumber(inlettemp3/40)))
 
     rectangle_rightleft(settings.line.centerxl, settings.server.y_temp1a, settings.line.width_2, settings.line.thickness, cputemp1a, 70, color_frompercent(tonumber(cputemp1a/70)))
     rectangle_rightleft(settings.line.centerxl, settings.server.y_temp1b, settings.line.width_2, settings.line.thickness, cputemp1b, 70, color_frompercent(tonumber(cputemp1b/70)))
     rectangle_rightleft(settings.line.centerxl, settings.server.y_temp2, settings.line.width_2, settings.line.thickness, cputemp2, 70, color_frompercent(tonumber(cputemp2/70)))
-    rectangle_rightleft(settings.line.centerxl, settings.server.y_temp3, settings.line.width_2, settings.line.thickness, cputemp3, 70, color_frompercent(tonumber(cputemp3/70)))
 
     rectangle_rightleft(settings.line.startx, settings.server.y_fan1a, settings.line.width_2, settings.line.thickness, fanspeed1a, 1, color_frompercent(fanspeed1a))
     rectangle_rightleft(settings.line.startx, settings.server.y_fan1b, settings.line.width_2, settings.line.thickness, fanspeed1b, 1, color_frompercent(fanspeed1b))
     rectangle_rightleft(settings.line.startx, settings.server.y_fan2, settings.line.width_2, settings.line.thickness, fanspeed2, 5700, color_frompercent(tonumber(fanspeed2/5700)))
-    rectangle_rightleft(settings.line.startx, settings.server.y_fan3, settings.line.width_2, settings.line.thickness, fanspeed3, 19885, color_frompercent(tonumber(fanspeed3/19885)))
 
     -- values
     write(settings.text.endx, settings.server.y_inlet - settings.line.height, inlettemp1 .. "°C", 12, main_text_color)
     write(settings.text.midxl, settings.server.y_inlet - settings.line.height, inlettemp2 .. "°C", 12, main_text_color)
-    write(settings.text.rightxl, settings.server.y_inlet - settings.line.height, inlettemp3 .. "°C", 12, main_text_color)
 
     write(settings.text.endx, settings.server.y_temp1a - settings.line.height, cputemp1a .. "°C", 12, main_text_color)
     write(settings.text.endx, settings.server.y_temp1b - settings.line.height, cputemp1b .. "°C", 12, main_text_color)
     write(settings.text.endx, settings.server.y_temp2 - settings.line.height, cputemp2 .. "°C", 12, main_text_color)
-    write(settings.text.endx, settings.server.y_temp3 - settings.line.height, cputemp3 .. "°C", 12, main_text_color)
 
     write(settings.text.centerxr, settings.server.y_fan1a - settings.line.height, math.floor(fanspeed1a*100) .. " %", 12, main_text_color)
     write(settings.text.centerxr, settings.server.y_fan1b - settings.line.height, math.floor(fanspeed1b*100) .. " %", 12, main_text_color)
     write(settings.text.centerxr, settings.server.y_fan2 - settings.line.height, tonumber(math.floor(fanspeed2/5700*100)) .. " %", 12, main_text_color)
-    write(settings.text.centerxr, settings.server.y_fan3 - settings.line.height, tonumber(math.floor(fanspeed3/19885*100)) .. " %", 12, main_text_color)
 
     -- titles
     write(settings.text.leftxr, settings.server.y_inlet - settings.line.height, "Inlet temp. SRV1", 12, main_text_color, "r")
     write(settings.text.midxr, settings.server.y_inlet - settings.line.height, "Inlet temp. SRV2", 12, main_text_color, "r")
-    write(settings.text.startx, settings.server.y_inlet - settings.line.height, "Inlet temp. SRV3", 12, main_text_color, "r")
 
     write(settings.text.centerxl, settings.server.y_temp1a - settings.line.height, "CPU1 SRV1 temperature", 12, main_text_color, "r")
     write(settings.text.centerxl, settings.server.y_temp1b - settings.line.height, "CPU2 SRV1 temperature", 12, main_text_color, "r")
     write(settings.text.centerxl, settings.server.y_temp2 - settings.line.height, "CPU SRV2 temperature", 12, main_text_color, "r")
-    write(settings.text.centerxl, settings.server.y_temp3 - settings.line.height, "CPU SRV3 temperature", 12, main_text_color, "r")
 
     write(settings.text.startx, settings.server.y_fan1a - settings.line.height, "SRV1 fan setting", 12, main_text_color, "r")
     write(settings.text.startx, settings.server.y_fan1b - settings.line.height, "SRV1 fan setting", 12, main_text_color, "r")
     write(settings.text.startx, settings.server.y_fan2 - settings.line.height, "SRV2 fan setting", 12, main_text_color, "r")
-    write(settings.text.startx, settings.server.y_fan3 - settings.line.height, "SRV3 fan setting", 12, main_text_color, "r")
 end
 
 function conky_main()
