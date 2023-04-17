@@ -93,15 +93,9 @@ settings.net.y_sh2              = settings.net.y_sh1 + settings.line.interval
 settings.net.y_sh3              = settings.net.y_sh2 + settings.line.interval
 
 settings.server.separator       = settings.net.y_info + 8 * settings.line.info_height
-settings.server.y_inlet         = settings.server.separator + settings.line.interval
-settings.server.y_temp1a        = settings.server.y_inlet + settings.line.interval
-settings.server.y_temp1b        = settings.server.y_temp1a + settings.line.interval
-settings.server.y_temp2         = settings.server.y_temp1b + settings.line.interval
-settings.server.y_temp3         = settings.server.y_temp2 + settings.line.interval
-settings.server.y_fan1a         = settings.server.y_inlet + settings.line.interval
-settings.server.y_fan1b         = settings.server.y_fan1a + settings.line.interval
-settings.server.y_fan2          = settings.server.y_fan1b + settings.line.interval
-settings.server.y_fan3          = settings.server.y_fan2 + settings.line.interval
+settings.server.y1a             = settings.server.separator + settings.line.interval
+settings.server.y1b             = settings.server.y1a + settings.line.interval
+settings.server.y2              = settings.server.y1b + settings.line.interval
 
 -- replace the content of the following function to create your own conky theme
 function start()
@@ -306,40 +300,41 @@ function draw_server()
     local fanspeed1b = hp_fan_speed("10.33.10.100", "ipmi_user", "pBjwGJ6Z9MD7msBV8Ym9", "'Fan 3'")
     local fanspeed2  = dell_fan_speed("10.33.10.101", "ipmi_user", "fwCX4MCvjz3N5mRRtUBx", "'Sys Fan1'")
 
-    rectangle_rightleft(settings.line.leftxr, settings.server.y_inlet, settings.line.width_3, settings.line.thickness, inlettemp1, 40, color_frompercent(tonumber(inlettemp1/40)))
-    rectangle_rightleft(settings.line.midxr, settings.server.y_inlet, settings.line.width_3, settings.line.thickness, inlettemp2, 40, color_frompercent(tonumber(inlettemp2/40)))
+    rectangle_rightleft(settings.line.leftxr, settings.server.y1a, settings.line.width_3, settings.line.thickness, inlettemp1, 40, color_frompercent(tonumber(inlettemp1/40)))
 
-    rectangle_rightleft(settings.line.centerxl, settings.server.y_temp1a, settings.line.width_2, settings.line.thickness, cputemp1a, 70, color_frompercent(tonumber(cputemp1a/70)))
-    rectangle_rightleft(settings.line.centerxl, settings.server.y_temp1b, settings.line.width_2, settings.line.thickness, cputemp1b, 70, color_frompercent(tonumber(cputemp1b/70)))
-    rectangle_rightleft(settings.line.centerxl, settings.server.y_temp2, settings.line.width_2, settings.line.thickness, cputemp2, 70, color_frompercent(tonumber(cputemp2/70)))
+    rectangle_rightleft(settings.line.leftxr, settings.server.y2, settings.line.width_3, settings.line.thickness, inlettemp2, 40, color_frompercent(tonumber(inlettemp2/40)))
 
-    rectangle_rightleft(settings.line.startx, settings.server.y_fan1a, settings.line.width_2, settings.line.thickness, fanspeed1a, 1, color_frompercent(fanspeed1a))
-    rectangle_rightleft(settings.line.startx, settings.server.y_fan1b, settings.line.width_2, settings.line.thickness, fanspeed1b, 1, color_frompercent(fanspeed1b))
-    rectangle_rightleft(settings.line.startx, settings.server.y_fan2, settings.line.width_2, settings.line.thickness, fanspeed2, 5700, color_frompercent(tonumber(fanspeed2/5700)))
+    rectangle_rightleft(settings.line.midxr, settings.server.y1a, settings.line.width_3, settings.line.thickness, cputemp1a, 90, color_frompercent(tonumber(cputemp1a/70)))
+    rectangle_rightleft(settings.line.midxr, settings.server.y1b, settings.line.width_3, settings.line.thickness, cputemp1b, 90, color_frompercent(tonumber(cputemp1b/70)))
+    rectangle_rightleft(settings.line.midxr, settings.server.y2, settings.line.width_3, settings.line.thickness, cputemp2, 90, color_frompercent(tonumber(cputemp2/70)))
+
+    rectangle_rightleft(settings.line.startx, settings.server.y1a, settings.line.width_3, settings.line.thickness, fanspeed1a, 1, color_frompercent(fanspeed1a))
+    rectangle_rightleft(settings.line.startx, settings.server.y1b, settings.line.width_3, settings.line.thickness, fanspeed1b, 1, color_frompercent(fanspeed1b))
+    rectangle_rightleft(settings.line.startx, settings.server.y2, settings.line.width_3, settings.line.thickness, fanspeed2, 5700, color_frompercent(tonumber(fanspeed2/5700)))
 
     -- values
-    write(settings.text.endx, settings.server.y_inlet - settings.line.height, inlettemp1 .. "°C", 12, main_text_color)
-    write(settings.text.midxl, settings.server.y_inlet - settings.line.height, inlettemp2 .. "°C", 12, main_text_color)
+    write(settings.text.endx, settings.server.y1a - settings.line.height, inlettemp1 .. "°C", 12, main_text_color)
+    write(settings.text.endx, settings.server.y2 - settings.line.height, inlettemp2 .. "°C", 12, main_text_color)
 
-    write(settings.text.endx, settings.server.y_temp1a - settings.line.height, cputemp1a .. "°C", 12, main_text_color)
-    write(settings.text.endx, settings.server.y_temp1b - settings.line.height, cputemp1b .. "°C", 12, main_text_color)
-    write(settings.text.endx, settings.server.y_temp2 - settings.line.height, cputemp2 .. "°C", 12, main_text_color)
+    write(settings.text.midxl, settings.server.y1a - settings.line.height, cputemp1a .. "°C", 12, main_text_color)
+    write(settings.text.midxl, settings.server.y1b - settings.line.height, cputemp1b .. "°C", 12, main_text_color)
+    write(settings.text.midxl, settings.server.y2 - settings.line.height, cputemp2 .. "°C", 12, main_text_color)
 
-    write(settings.text.centerxr, settings.server.y_fan1a - settings.line.height, math.floor(fanspeed1a*100) .. " %", 12, main_text_color)
-    write(settings.text.centerxr, settings.server.y_fan1b - settings.line.height, math.floor(fanspeed1b*100) .. " %", 12, main_text_color)
-    write(settings.text.centerxr, settings.server.y_fan2 - settings.line.height, tonumber(math.floor(fanspeed2/5700*100)) .. " %", 12, main_text_color)
+    write(settings.text.rightxl, settings.server.y1a - settings.line.height, math.floor(fanspeed1a*100) .. " %", 12, main_text_color)
+    write(settings.text.rightxl, settings.server.y1b - settings.line.height, math.floor(fanspeed1b*100) .. " %", 12, main_text_color)
+    write(settings.text.rightxl, settings.server.y2 - settings.line.height, tonumber(math.floor(fanspeed2/5700*100)) .. " %", 12, main_text_color)
 
     -- titles
-    write(settings.text.leftxr, settings.server.y_inlet - settings.line.height, "Inlet temp. SRV1", 12, main_text_color, "r")
-    write(settings.text.midxr, settings.server.y_inlet - settings.line.height, "Inlet temp. SRV2", 12, main_text_color, "r")
+    write(settings.text.leftxr, settings.server.y1a - settings.line.height, "Inlet temp. SRV1", 12, main_text_color, "r")
+    write(settings.text.leftxr, settings.server.y2 - settings.line.height, "Inlet temp. SRV2", 12, main_text_color, "r")
 
-    write(settings.text.centerxl, settings.server.y_temp1a - settings.line.height, "CPU1 SRV1 temperature", 12, main_text_color, "r")
-    write(settings.text.centerxl, settings.server.y_temp1b - settings.line.height, "CPU2 SRV1 temperature", 12, main_text_color, "r")
-    write(settings.text.centerxl, settings.server.y_temp2 - settings.line.height, "CPU SRV2 temperature", 12, main_text_color, "r")
+    write(settings.text.midxr, settings.server.y1a - settings.line.height, "CPU1 SRV1 temp.", 12, main_text_color, "r")
+    write(settings.text.midxr, settings.server.y1b - settings.line.height, "CPU2 SRV1 temp.", 12, main_text_color, "r")
+    write(settings.text.midxr, settings.server.y2 - settings.line.height, "CPU SRV2 temp.", 12, main_text_color, "r")
 
-    write(settings.text.startx, settings.server.y_fan1a - settings.line.height, "SRV1 fan setting", 12, main_text_color, "r")
-    write(settings.text.startx, settings.server.y_fan1b - settings.line.height, "SRV1 fan setting", 12, main_text_color, "r")
-    write(settings.text.startx, settings.server.y_fan2 - settings.line.height, "SRV2 fan setting", 12, main_text_color, "r")
+    write(settings.text.startx, settings.server.y1a - settings.line.height, "SRV1 fan [RPM]", 12, main_text_color, "r")
+    write(settings.text.startx, settings.server.y1b - settings.line.height, "SRV1 fan [RPM]", 12, main_text_color, "r")
+    write(settings.text.startx, settings.server.y2 - settings.line.height, "SRV2 fan [RPM]", 12, main_text_color, "r")
 end
 
 function conky_main()
