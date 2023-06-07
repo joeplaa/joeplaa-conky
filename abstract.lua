@@ -353,5 +353,5 @@ function hp_inlet_temp(ip, user, pw) return parse("execi 60 ipmitool -I lanplus 
 function hp_fan_speed(ip, user, pw, fan)
     local fanspeed = parse("execi 60 ipmitool -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sensor reading " .. fan .. " | awk '{ print $NF }'")
     local fs1, fs2 = fanspeed:match("([^.]+).([^.]+)")
-    return tonumber(fs1) / 100 + tonumber(fs2) / 10000
+    return tonumber(fs1) / 100 + tonumber(fs2) / 8750
 end

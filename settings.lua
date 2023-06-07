@@ -37,8 +37,8 @@ net_interface = "eno1"
 --[[
 this depends on your own internet speed
 ]]
-download_rate_maximum = 5000     -- kb
-upload_rate_maximum   = 5000     -- kb
+download_rate_maximum = 25000     -- kb
+upload_rate_maximum   = 25000     -- kb
 
 --[[
 KVM/QEMU/Libvirt pool name
