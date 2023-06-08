@@ -232,8 +232,8 @@ function desktops()             return parse("desktop_number") end          --  
 function desktop()              return parse("desktop") end                 --  ex: 3 (current desktop)
 function desktop_name()         return parse("desktop_name") end            --  ex: Desktop 3
 function username()             return parse("user_names") end
-function cpu_temperature()      return parse("hwmon 2 temp 1") end          --  temperature in C°
-function cpu_fanspeed()         return parse("hwmon 3 fan 2") end           --  speed in RPM
+function cpu_temperature()      return parse("hwmon 1 temp 1") end          --  temperature in C°
+function cpu_fanspeed()         return parse("hwmon 2 fan 2") end           --  speed in RPM
 function cpu_percent(n)
     if n == nil or n == "" then return parse("cpu") end
     if n > 0 and n <= cpu_cores    then return parse("cpu cpu" .. n)
@@ -289,10 +289,10 @@ function memory_buffers()       return parse("buffers") end                     
 function swap()                 return parse("swap") end
 function swap_max()             return parse("swapmax") end
 function swap_percent()         return parse("swapperc") end
-function sys_temp_in()          return parse("hwmon 3 temp 1") end                      --  temperature in C°
-function sys_temperature()      return parse("hwmon 3 temp 2") end                      --  temperature in C°
-function sys_fanspeed1()        return parse("hwmon 3 fan 1") end                       --  speed in RPM
-function sys_fanspeed2()        return parse("hwmon 3 fan 3") end                       --  speed in RPM
+function sys_temp_in()          return parse("hwmon 2 temp 1") end                      --  temperature in C°
+function sys_temperature()      return parse("hwmon 2 temp 2") end                      --  temperature in C°
+function sys_fanspeed1()        return parse("hwmon 2 fan 1") end                       --  speed in RPM
+function sys_fanspeed2()        return parse("hwmon 2 fan 3") end                       --  speed in RPM
 function download_speed()       return parse("downspeed " .. net_interface) .. "/s" end --  ex: 930B or 3kb
 function download_total()       return parse("totaldown " .. net_interface) end
 function downspeedgraph()       return parse("downspeedgraph" .. net_interface) end
