@@ -15,6 +15,7 @@ settings = {
     clock  = {},
     info   = {},
     cpu    = {},
+    gpu    = {},
     mem    = {},
     disk   = {},
     net    = {},
@@ -76,7 +77,14 @@ settings.cpu.y_fan              = settings.cpu.y_temp + settings.line.interval
 settings.cpu.y_load             = settings.cpu.y_fan + settings.line.section_text_interval
 settings.cpu.y_info             = settings.cpu.y_load + settings.line.interval * 0.75
 
-settings.mem.separator          = settings.cpu.y_info + 10 * settings.line.info_height
+settings.gpu.separator          = settings.cpu.y_info + 10 * settings.line.info_height
+settings.gpu.y_temp             = settings.gpu.separator + settings.line.interval
+settings.gpu.y_fan              = settings.gpu.y_temp + settings.line.interval
+settings.gpu.y_power            = settings.gpu.y_fan + settings.line.interval
+settings.gpu.y_util             = settings.gpu.separator + settings.line.interval
+settings.gpu.y_ram              = settings.gpu.y_util + settings.line.interval
+
+settings.mem.separator          = settings.gpu.y_power + 1 * settings.line.info_height
 settings.mem.y_info             = settings.mem.separator + settings.line.section_text_interval
 settings.mem.y_ram              = settings.mem.separator + settings.line.interval
 settings.mem.y_swap             = settings.mem.y_ram + settings.line.interval
@@ -102,6 +110,7 @@ function start()
     draw_clock()
     draw_info()
     draw_cpu()
+    draw_gpu()
     draw_memory()
     draw_disks()
     draw_net()
@@ -109,7 +118,7 @@ function start()
 end
 
 function draw_clock()
-    write(settings.clock.time_x, settings.clock.time_y, time_hrminsec(), 85, main_text_color, "c")
+    write(settings.clock.time_x, settings.clock.time_y, time_hrminsec(), 75, main_text_color, "c")
     write(settings.clock.date_x, settings.clock.date_y, string.format("%s, %s %s %s", time_day(), time_month_number(), time_month(), time_year()), 20, main_text_color, "c")
 end
 
@@ -146,8 +155,8 @@ function draw_info()
 end
 
 function draw_cpu()
-    write_bold(settings.line.endx, settings.cpu.separator + settings.line.height / 2, "CPU", 12, main_text_color)
-    line(settings.line.startx, settings.cpu.separator, settings.line.endx + 32, settings.cpu.separator, settings.line.thickness, main_text_color, 1)
+    write_bold(settings.line.endx, settings.cpu.separator + settings.line.height / 2, "CPU: " .. cpu_name(), 12, main_text_color)
+    line(settings.line.startx, settings.cpu.separator, settings.line.endx + 335, settings.cpu.separator, settings.line.thickness, main_text_color, 1)
 
     -- cpu info
     local vals = {
@@ -187,9 +196,40 @@ function draw_cpu()
     --write(settings.text.startx, settings.cpu.y_total - settings.line.height, "total CPU", 12, main_text_color, "r")
 end
 
+function draw_gpu()
+    write_bold(settings.line.endx, settings.gpu.separator + settings.line.height / 2, "GPU: " .. gpu_name(), 12, main_text_color)
+    line(settings.line.startx, settings.gpu.separator, settings.line.endx + 180, settings.gpu.separator, settings.line.thickness, main_text_color, 1)
+
+    local gputemp   = gpu_temp()
+    local gpufan    = gpu_fanspeed()
+    local gpupower  = gpu_power()
+    local gpuutil   = gpu_utilization()
+    local gpuram    = gpu_vram_util()
+
+    rectangle_rightleft(settings.line.centerxl, settings.gpu.y_temp, settings.line.width_2, settings.line.thickness, gputemp, 95, color_frompercent(tonumber(gputemp)/95))
+    rectangle_rightleft(settings.line.centerxl, settings.gpu.y_fan, settings.line.width_2, settings.line.thickness, gpufan, 100, color_frompercent(tonumber(gpufan)))
+    rectangle_rightleft(settings.line.centerxl, settings.gpu.y_power, settings.line.width_2, settings.line.thickness, gpupower, 75, color_frompercent(tonumber(gpupower)/75))
+    rectangle_rightleft(settings.line.startx, settings.gpu.y_util, settings.line.width_2, settings.line.thickness, gpuutil, 100, color_frompercent(tonumber(gpuutil)))
+    rectangle_rightleft(settings.line.startx, settings.gpu.y_ram, settings.line.width_2, settings.line.thickness, gpuram, 4096, color_frompercent(tonumber(gpuram)/4096))
+
+    -- values
+    write(settings.text.endx, settings.gpu.y_temp - settings.line.height, gputemp .. "°C", 12, main_text_color)
+    write(settings.text.endx, settings.gpu.y_fan - settings.line.height, gpufan .. " %", 12, main_text_color)
+    write(settings.text.endx, settings.gpu.y_power - settings.line.height, gpupower .. " W", 12, main_text_color)
+    write(settings.text.centerxr, settings.gpu.y_util - settings.line.height, gpuutil .. " %", 12, main_text_color)
+    write(settings.text.centerxr, settings.gpu.y_ram - settings.line.height, gpuram .. " MiB", 12, main_text_color)
+
+    -- titles
+    write(settings.text.centerxl, settings.gpu.y_temp - settings.line.height, "GPU temperature", 12, main_text_color, "r")
+    write(settings.text.centerxl, settings.gpu.y_fan - settings.line.height, "GPU fan speed", 12, main_text_color, "r")
+    write(settings.text.centerxl, settings.gpu.y_power - settings.line.height, "Power usage", 12, main_text_color, "r")
+    write(settings.text.startx, settings.gpu.y_util - settings.line.height, "GPU utilization", 12, main_text_color, "r")
+    write(settings.text.startx, settings.gpu.y_ram - settings.line.height, "GPU RAM utilization", 12, main_text_color, "r")
+end
+
 function draw_memory()
-    write_bold(settings.line.endx, settings.mem.separator + settings.line.height / 2, "MEMORY", 12, main_text_color)
-    line(settings.line.startx, settings.mem.separator, settings.line.endx + 56, settings.mem.separator, settings.line.thickness, main_text_color, 1)
+    write_bold(settings.line.endx, settings.mem.separator + settings.line.height / 2, "MEMORY: " .. memory_name(), 12, main_text_color)
+    line(settings.line.startx, settings.mem.separator, settings.line.endx + 240, settings.mem.separator, settings.line.thickness, main_text_color, 1)
 
     -- processes list by mem consumption
     write_list_proccesses_mem(settings.text.endx, settings.mem.y_info, settings.line.info_height, 10, 12, main_text_color)
@@ -304,13 +344,13 @@ function draw_server()
 
     rectangle_rightleft(settings.line.leftxr, settings.server.y2, settings.line.width_3, settings.line.thickness, inlettemp2, 40, color_frompercent(tonumber(inlettemp2/40)))
 
-    rectangle_rightleft(settings.line.midxr, settings.server.y1a, settings.line.width_3, settings.line.thickness, cputemp1a, 90, color_frompercent(tonumber(cputemp1a/70)))
-    rectangle_rightleft(settings.line.midxr, settings.server.y1b, settings.line.width_3, settings.line.thickness, cputemp1b, 90, color_frompercent(tonumber(cputemp1b/70)))
-    rectangle_rightleft(settings.line.midxr, settings.server.y2, settings.line.width_3, settings.line.thickness, cputemp2, 90, color_frompercent(tonumber(cputemp2/70)))
+    rectangle_rightleft(settings.line.midxr, settings.server.y1a, settings.line.width_3, settings.line.thickness, cputemp1a, 75, color_frompercent(tonumber(cputemp1a/70)))
+    rectangle_rightleft(settings.line.midxr, settings.server.y1b, settings.line.width_3, settings.line.thickness, cputemp1b, 75, color_frompercent(tonumber(cputemp1b/70)))
+    rectangle_rightleft(settings.line.midxr, settings.server.y2, settings.line.width_3, settings.line.thickness, cputemp2, 75, color_frompercent(tonumber(cputemp2/70)))
 
-    rectangle_rightleft(settings.line.startx, settings.server.y1a, settings.line.width_3, settings.line.thickness, fanspeed1a, 1, color_frompercent(fanspeed1a))
-    rectangle_rightleft(settings.line.startx, settings.server.y1b, settings.line.width_3, settings.line.thickness, fanspeed1b, 1, color_frompercent(fanspeed1b))
-    rectangle_rightleft(settings.line.startx, settings.server.y2, settings.line.width_3, settings.line.thickness, fanspeed2, 5700, color_frompercent(tonumber(fanspeed2/5700)))
+    rectangle_rightleft(settings.line.startx, settings.server.y1a, settings.line.width_3, settings.line.thickness, fanspeed1a, 100, color_frompercent(fanspeed1a))
+    rectangle_rightleft(settings.line.startx, settings.server.y1b, settings.line.width_3, settings.line.thickness, fanspeed1b, 100, color_frompercent(fanspeed1b))
+    rectangle_rightleft(settings.line.startx, settings.server.y2, settings.line.width_3, settings.line.thickness, fanspeed2, 6400, color_frompercent(tonumber(fanspeed2/6400)))
 
     -- values
     write(settings.text.endx, settings.server.y1a - settings.line.height, inlettemp1 .. "°C", 12, main_text_color)
@@ -320,9 +360,9 @@ function draw_server()
     write(settings.text.midxl, settings.server.y1b - settings.line.height, cputemp1b .. "°C", 12, main_text_color)
     write(settings.text.midxl, settings.server.y2 - settings.line.height, cputemp2 .. "°C", 12, main_text_color)
 
-    write(settings.text.rightxl, settings.server.y1a - settings.line.height, math.floor(fanspeed1a*100) .. " %", 12, main_text_color)
-    write(settings.text.rightxl, settings.server.y1b - settings.line.height, math.floor(fanspeed1b*100) .. " %", 12, main_text_color)
-    write(settings.text.rightxl, settings.server.y2 - settings.line.height, tonumber(math.floor(fanspeed2/5700*100)) .. " %", 12, main_text_color)
+    write(settings.text.rightxl, settings.server.y1a - settings.line.height, math.floor(fanspeed1a/100*8750) .. " RPM", 12, main_text_color)
+    write(settings.text.rightxl, settings.server.y1b - settings.line.height, math.floor(fanspeed1b/100*8750) .. " RPM", 12, main_text_color)
+    write(settings.text.rightxl, settings.server.y2 - settings.line.height, tonumber(math.floor(fanspeed2)) .. " RPM", 12, main_text_color)
 
     -- titles
     write(settings.text.leftxr, settings.server.y1a - settings.line.height, "Inlet temp. SRV1", 12, main_text_color, "r")
@@ -332,9 +372,9 @@ function draw_server()
     write(settings.text.midxr, settings.server.y1b - settings.line.height, "CPU2 SRV1 temp.", 12, main_text_color, "r")
     write(settings.text.midxr, settings.server.y2 - settings.line.height, "CPU SRV2 temp.", 12, main_text_color, "r")
 
-    write(settings.text.startx, settings.server.y1a - settings.line.height, "SRV1 fan [RPM]", 12, main_text_color, "r")
-    write(settings.text.startx, settings.server.y1b - settings.line.height, "SRV1 fan [RPM]", 12, main_text_color, "r")
-    write(settings.text.startx, settings.server.y2 - settings.line.height, "SRV2 fan [RPM]", 12, main_text_color, "r")
+    write(settings.text.startx, settings.server.y1a - settings.line.height, "SRV1 fan speed", 12, main_text_color, "r")
+    write(settings.text.startx, settings.server.y1b - settings.line.height, "SRV1 fan speed", 12, main_text_color, "r")
+    write(settings.text.startx, settings.server.y2 - settings.line.height, "SRV2 fan speed", 12, main_text_color, "r")
 end
 
 function conky_main()

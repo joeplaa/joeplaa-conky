@@ -232,6 +232,7 @@ function desktops()             return parse("desktop_number") end          --  
 function desktop()              return parse("desktop") end                 --  ex: 3 (current desktop)
 function desktop_name()         return parse("desktop_name") end            --  ex: Desktop 3
 function username()             return parse("user_names") end
+function cpu_name()             return parse("exec cat /proc/cpuinfo | grep 'name'| uniq | cut -c 14-54") end
 function cpu_temperature()      return parse("hwmon 1 temp 1") end          --  temperature in C°
 function cpu_fanspeed()         return parse("hwmon 2 fan 2") end           --  speed in RPM
 function cpu_percent(n)
@@ -270,6 +271,12 @@ function fs_free(fs)
     else                        return parse("fs_free " .. fs)
     end
 end
+function gpu_name()             return "NVIDIA " .. parse("exec nvidia-smi -L | cut -c 8-19") end
+function gpu_temp()             return parse("execi 60 nvidia-settings -query [gpu:0]/GPUCoreTemp -t") end
+function gpu_fanspeed()         return parse("execi 60 nvidia-smi | grep % | cut -c 3-4") end
+function gpu_utilization()      return parse("execi 60 nvidia-smi | grep % | cut -c 72-73") end
+function gpu_vram_util()        return parse("execi 60 nvidia-smi | grep % | cut -c 47-50") end
+function gpu_power()            return parse("execi 60 nvidia-smi | grep % | cut -c 32-33") end
 function vm_used(vm)            return parse("execi 60 virsh vol-info " .. vm .. " --pool " .. pool_name .. " | grep Allocation | awk '{print$2 $3}'") end
 function vm_size(vm)            return parse("execi 60 virsh vol-info " .. vm .. " --pool " .. pool_name .. " | grep Capacity | awk '{print$2 $3}'") end
 function vm_used_perc(vm)
@@ -281,6 +288,7 @@ function vm_used_perc(vm)
 end
 function load_avg()             return parse("loadavg") end                             --  system load averages
 function running_threads()      return parse("running_threads") end
+function memory_name()          return parse("exec sudo dmidecode --type memory | grep -m1 Manufacturer | cut -c 16-23") .. " " .. parse("exec sudo dmidecode --type memory | grep -m1 'Part Number' | cut -c 15-29") end
 function memory()               return parse("mem") end                                 --  amount of memory in use
 function memory_percent()       return parse("memperc") end                             --  percentage of memory in use
 function memory_max()           return parse("memmax") end                              --  total amount of memory
@@ -353,5 +361,5 @@ function hp_inlet_temp(ip, user, pw) return parse("execi 60 ipmitool -I lanplus 
 function hp_fan_speed(ip, user, pw, fan)
     local fanspeed = parse("execi 60 ipmitool -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sensor reading " .. fan .. " | awk '{ print $NF }'")
     local fs1, fs2 = fanspeed:match("([^.]+).([^.]+)")
-    return tonumber(fs1) / 100 + tonumber(fs2) / 8750
+    return (tonumber(fs1) * 1000 + tonumber(fs2)) / 1000
 end
