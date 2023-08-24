@@ -14,6 +14,7 @@ settings = {
     text   = {},
     clock  = {},
     info   = {},
+    temp   = {},
     cpu    = {},
     gpu    = {},
     mem    = {},
@@ -36,9 +37,11 @@ settings.base.y                 = 40
 settings.line.thickness         = 2
 settings.line.height            = 10
 settings.line.info_height       = 20
+settings.line.temp              = 80
 settings.line.width_2           = (settings.base.x - 3 * settings.base.margin) / 2 -- line length (2 columns)
 settings.line.width_3           = (settings.base.x - 4 * settings.base.margin) / 3 -- line length (3 columns)
-settings.line.width_4           = settings.line.width_3 * 2 + settings.base.margin -- line length (2/3 width)
+settings.line.width_4           = (settings.base.x - 5 * settings.base.margin) / 4 -- line length (4 columns)
+settings.line.width_5           = settings.line.width_3 * 2 + settings.base.margin -- line length (2/3 width)
 settings.line.startx            = settings.base.x - settings.base.margin           -- right
 settings.line.centerxr          = settings.line.startx - settings.line.width_2     -- right of center; left of the right column (2 columns)
 settings.line.centerxl          = settings.line.centerxr - settings.base.margin    -- left of center; right of the left column (2 columns)
@@ -47,6 +50,8 @@ settings.line.rightxl           = settings.line.startx - settings.line.width_3  
 settings.line.midxr             = settings.line.rightxl - settings.base.margin     -- right of the mid column (3 columns)
 settings.line.midxl             = settings.line.midxr - settings.line.width_3      -- left of the mid column (3 columns)
 settings.line.leftxr            = settings.line.midxl - settings.base.margin       -- right of the left column (3 columns)
+settings.line.utilxl            = settings.line.startx - settings.line.width_4     -- left of the right column (4 columns)
+settings.line.utilxr            = settings.line.utilxl - settings.base.margin      -- right of the mid column (4 columns)
 settings.line.interval          = 40
 settings.line.section_interval  = settings.line.interval * 0.5
 settings.line.section_text_interval = settings.line.interval * 0.75
@@ -59,6 +64,8 @@ settings.text.rightxl           = settings.line.rightxl + settings.base.margin /
 settings.text.midxr             = settings.line.midxr - settings.base.margin / 2    -- right of the mid column (3 columns)
 settings.text.midxl             = settings.line.midxl + settings.base.margin / 2    -- left of the mid column (3 columns)
 settings.text.leftxr            = settings.line.leftxr - settings.base.margin / 2   -- right of the left column (3 columns)
+settings.text.utilxl            = settings.line.utilxl + settings.base.margin / 2   -- left of the right column (4 columns)
+settings.text.utilxr            = settings.line.utilxr - settings.base.margin / 2   -- right of the mid column (4 columns)
 
 settings.clock.time_x           = settings.base.x
 settings.clock.time_y           = settings.base.y + settings.line.interval * 1.5
@@ -71,20 +78,37 @@ settings.info.y_temp            = settings.info.separator + settings.line.interv
 settings.info.y_fan1            = settings.info.y_temp + settings.line.interval
 settings.info.y_fan2            = settings.info.y_fan1 + settings.line.interval
 
-settings.cpu.separator          = settings.info.y_fan2 + settings.line.section_interval
-settings.cpu.y_temp             = settings.cpu.separator + settings.line.interval
-settings.cpu.y_fan              = settings.cpu.y_temp + settings.line.interval
-settings.cpu.y_load             = settings.cpu.y_fan + settings.line.section_text_interval
-settings.cpu.y_info             = settings.cpu.y_load + settings.line.interval * 0.75
+settings.temp.y                 = settings.info.y + 85
+settings.temp.label             = settings.temp.y + settings.line.section_text_interval
+settings.temp.value             = settings.temp.y - settings.line.temp
+settings.temp.x1                = settings.base.x - 200
+settings.temp.x2                = settings.temp.x1 + 40
+settings.temp.x3                = settings.temp.x2 + 40
+settings.temp.x4                = settings.temp.x3 + 40
+settings.temp.x5                = settings.temp.x4 + 40
+settings.temp.label1            = settings.temp.x1 + 12
+settings.temp.label2            = settings.temp.x2 + 12
+settings.temp.label3            = settings.temp.x3 + 12
+settings.temp.label4            = settings.temp.x4 + 12
+settings.temp.label5            = settings.temp.x5 + 16
+settings.temp.value1            = settings.temp.x1 - 10
+settings.temp.value2            = settings.temp.x2 - 10
+settings.temp.value3            = settings.temp.x3 - 10
+settings.temp.value4            = settings.temp.x4 - 10
+settings.temp.value5            = settings.temp.x5 - 10
 
-settings.gpu.separator          = settings.cpu.y_info + 10 * settings.line.info_height
-settings.gpu.y_temp             = settings.gpu.separator + settings.line.interval
-settings.gpu.y_fan              = settings.gpu.y_temp + settings.line.interval
+settings.cpu.separator          = settings.info.y + settings.line.section_interval * 6
+settings.cpu.y_util             = settings.cpu.separator + settings.line.interval
+settings.cpu.y_info             = settings.cpu.separator + settings.line.section_text_interval
+
+settings.gpu.separator          = settings.cpu.y_util + 11 * settings.line.section_interval
+settings.gpu.y_fan              = settings.gpu.separator + settings.line.interval
 settings.gpu.y_power            = settings.gpu.y_fan + settings.line.interval
 settings.gpu.y_util             = settings.gpu.separator + settings.line.interval
-settings.gpu.y_ram              = settings.gpu.y_util + settings.line.interval
+settings.gpu.y_encode           = settings.gpu.y_util + settings.line.interval
+settings.gpu.y_ram              = settings.gpu.y_encode + settings.line.interval
 
-settings.mem.separator          = settings.gpu.y_power + 1 * settings.line.info_height
+settings.mem.separator          = settings.gpu.y_ram + 1 * settings.line.info_height
 settings.mem.y_info             = settings.mem.separator + settings.line.section_text_interval
 settings.mem.y_ram              = settings.mem.separator + settings.line.interval
 settings.mem.y_swap             = settings.mem.y_ram + settings.line.interval
@@ -92,9 +116,10 @@ settings.mem.y_usage            = settings.mem.y_swap + settings.line.interval
 
 settings.disk.separator         = settings.mem.y_info + 10 * settings.line.info_height
 settings.disk.y_info            = settings.disk.separator + settings.line.section_text_interval
-settings.disk.y_ssd             = settings.disk.separator + settings.line.interval * 1.25 -- x 1.25 to vertically center
+settings.disk.y_ssd_util        = settings.disk.separator + settings.line.interval
+settings.disk.y_vdisk_util      = settings.disk.y_ssd_util + settings.line.interval
 
-settings.net.separator          = settings.disk.y_info + 3 * settings.line.info_height
+settings.net.separator          = settings.disk.y_info + 3.5 * settings.line.info_height
 settings.net.y_info             = settings.net.separator + settings.line.section_text_interval
 settings.net.y_sh1              = settings.net.separator + settings.line.interval * 1.25 -- x 1.25 to vertically center
 settings.net.y_sh2              = settings.net.y_sh1 + settings.line.interval
@@ -109,6 +134,7 @@ settings.server.y2              = settings.server.y1b + settings.line.interval
 function start()
     draw_clock()
     draw_info()
+    draw_temp()
     draw_cpu()
     draw_gpu()
     draw_memory()
@@ -127,109 +153,121 @@ function draw_info()
     line(settings.line.startx, settings.info.separator, settings.line.endx + 56, settings.info.separator, settings.line.thickness, main_text_color, 1)
 
     local vals = {
-        "Hostname:  " .. hostname(),
-        "Uptime:    " .. uptime(),
-        "OS:        " .. os(),
-        "Kernel:    " .. kernel(),
-        string.format("Desktop:   %s/%s", desktop(), desktops()),
+        "Hostname: " .. hostname(),
+        "Uptime:   " .. uptime(),
+        "Load avg: " .. load_avg(),
+        "OS:       " .. os(),
+        "Kernel:   " .. kernel(),
+        string.format("Desktop:  %s/%s", desktop(), desktops()),
     }
     write_line_by_line(settings.text.endx, settings.info.y, settings.line.info_height, vals, main_text_color, 12, false)
+end
 
-    local systemp   = sys_temperature()
-    local sysfan1   = sys_fanspeed1()
-    local sysfan2   = sys_fanspeed2()
+function draw_temp()
+    local cputemp = math.floor(tonumber(cpu_temperature())/1000)
+    local gputemp = tonumber(gpu_temp())
+    local ssdtemp = tonumber(ssd_temperature())
+    local pchtemp = math.floor(tonumber(sys_temperature())/1000)
+    local acpitemp= math.floor(tonumber(acpi_temperature())/1000)
 
-    rectangle_rightleft(settings.line.startx, settings.info.y_temp, settings.line.width_2, settings.line.thickness, systemp, 70, color_frompercent(tonumber(systemp/70)))
-    rectangle_rightleft(settings.line.startx, settings.info.y_fan1, settings.line.width_2, settings.line.thickness, sysfan1, 1150, color_frompercent(tonumber(sysfan1/1150)))
-    rectangle_rightleft(settings.line.startx, settings.info.y_fan2, settings.line.width_2, settings.line.thickness, sysfan2, 1250, color_frompercent(tonumber(sysfan2/1250)))
+    rectangle_bottomup(settings.temp.x1, settings.temp.y, settings.line.temp, settings.line.thickness, cputemp, 100, color_frompercent(cputemp/100))
+    write(settings.temp.value1, settings.temp.value - settings.line.height, cputemp .. "°C", 12, main_text_color)
+    write(settings.temp.label1, settings.temp.label - settings.line.height, "CPU", 12, main_text_color, "r")
 
-    -- values
-    write(settings.text.centerxr, settings.info.y_temp - settings.line.height, systemp .. "°C", 12, main_text_color)
-    write(settings.text.centerxr, settings.info.y_fan1 - settings.line.height, sysfan1 .. " RPM", 12, main_text_color)
-    write(settings.text.centerxr, settings.info.y_fan2 - settings.line.height, sysfan2 .. " RPM", 12, main_text_color)
+    rectangle_bottomup(settings.temp.x2, settings.temp.y, settings.line.temp, settings.line.thickness, gputemp, 95, color_frompercent(gputemp/95))
+    write(settings.temp.value2, settings.temp.value - settings.line.height, gputemp .. "°C", 12, main_text_color)
+    write(settings.temp.label2, settings.temp.label - settings.line.height, "GPU", 12, main_text_color, "r")
 
-    -- titles
-    write(settings.text.startx, settings.info.y_temp - settings.line.height, "System temperature", 12, main_text_color, "r")
-    write(settings.text.startx, settings.info.y_fan1 - settings.line.height, "System fan 1 speed", 12, main_text_color, "r")
-    write(settings.text.startx, settings.info.y_fan2 - settings.line.height, "System fan 2 speed", 12, main_text_color, "r")
+    rectangle_bottomup(settings.temp.x3, settings.temp.y, settings.line.temp, settings.line.thickness, pchtemp, 100, color_frompercent(pchtemp/100))
+    write(settings.temp.value3, settings.temp.value - settings.line.height, pchtemp .. "°C", 12, main_text_color)
+    write(settings.temp.label3, settings.temp.label - settings.line.height, "PCH", 12, main_text_color, "r")
+
+    rectangle_bottomup(settings.temp.x4, settings.temp.y, settings.line.temp, settings.line.thickness, ssdtemp, 86.8, color_frompercent(ssdtemp/86.8))
+    write(settings.temp.value4, settings.temp.value - settings.line.height, ssdtemp .. "°C", 12, main_text_color)
+    write(settings.temp.label4, settings.temp.label - settings.line.height, "SSD", 12, main_text_color, "r")
+
+    rectangle_bottomup(settings.temp.x5, settings.temp.y, settings.line.temp, settings.line.thickness, acpitemp, 70, color_frompercent(acpitemp/70))
+    write(settings.temp.value5, settings.temp.value - settings.line.height, acpitemp .. "°C", 12, main_text_color)
+    write(settings.temp.label5, settings.temp.label - settings.line.height, "ACPI", 12, main_text_color, "r")
 end
 
 function draw_cpu()
     write_bold(settings.line.endx, settings.cpu.separator + settings.line.height / 2, "CPU: " .. cpu_name(), 12, main_text_color)
-    line(settings.line.startx, settings.cpu.separator, settings.line.endx + 335, settings.cpu.separator, settings.line.thickness, main_text_color, 1)
+    line(settings.line.startx, settings.cpu.separator, settings.line.endx + 308, settings.cpu.separator, settings.line.thickness, main_text_color, 1)
 
-    -- cpu info
-    local vals = {
-        "Load avg: " .. load_avg(),
-    }
-    write_line_by_line(settings.text.endx, settings.cpu.y_load, settings.line.info_height, vals, main_text_color, 12, false)
+    --local cpufanspeed   = cpu_fanspeed()
+    
+    --rectangle_rightleft(settings.line.centerxl, settings.cpu.y_fan, settings.line.width_2, settings.line.thickness, cpufanspeed, 1550, color_frompercent(tonumber(cpufanspeed/1550)))
+    --write(settings.text.endx, settings.cpu.y_fan - settings.line.height, cpufanspeed .. " RPM", 12, main_text_color)
+    --write(settings.text.centerxl, settings.cpu.y_fan - settings.line.height, "CPU fan speed", 12, main_text_color, "r")
+
     -- processes list by cpu consumption
     write_list_proccesses_cpu(settings.text.endx, settings.cpu.y_info, settings.line.info_height, 10, 12, main_text_color)
 
-    local cputemp       = cpu_temperature()
-    local cpufanspeed   = cpu_fanspeed()
-
-    rectangle_rightleft(settings.line.centerxl, settings.cpu.y_temp, settings.line.width_2, settings.line.thickness, cputemp, 70, color_frompercent(tonumber(cputemp/70)))
-    rectangle_rightleft(settings.line.centerxl, settings.cpu.y_fan, settings.line.width_2, settings.line.thickness, cpufanspeed, 1550, color_frompercent(tonumber(cpufanspeed/1550)))
-    for i = 1, cpu_cores do
-        y = settings.cpu.y_temp + (i - 1) * settings.line.interval
-        rectangle_rightleft(settings.line.startx, y, settings.line.width_2, settings.line.thickness, cpu_percent(i), 100, color_frompercent(tonumber(cpu_percent(i))))
+    for i = 1, cpu_cores / 2 do
+        y = settings.cpu.y_util + (i - 1) * settings.line.interval
+        rectangle_rightleft(settings.line.utilxr, y, settings.line.width_4, settings.line.thickness, cpu_percent(i), 100, color_frompercent(tonumber(cpu_percent(i))))
     end
-    --rectangle_rightleft(settings.line.startx, settings.cpu.y_total, settings.line.width_2, settings.line.thickness, cpu, 100, color_frompercent(tonumber(cpu)))
+    for i = 1, cpu_cores / 2 do
+        y = settings.cpu.y_util + (i - 1) * settings.line.interval
+        rectangle_rightleft(settings.line.startx, y, settings.line.width_4, settings.line.thickness, cpu_percent(i + cpu_cores / 2), 100, color_frompercent(tonumber(cpu_percent(i + cpu_cores / 2))))
+    end
 
     -- values
-    write(settings.text.endx, settings.cpu.y_temp - settings.line.height, cputemp .. "°C", 12, main_text_color)
-    write(settings.text.endx, settings.cpu.y_fan - settings.line.height, cpufanspeed .. " RPM", 12, main_text_color)
-    for i = 1, cpu_cores do
-        y = settings.cpu.y_temp + (i - 1) * settings.line.interval - settings.line.height
-        write(settings.text.centerxr, y, cpu_percent(i) .. "%", 12, main_text_color)
+    for i = 1, cpu_cores / 2 do
+        y = settings.cpu.y_util + (i - 1) * settings.line.interval - settings.line.height
+        write(settings.text.utilxl, y, cpu_percent(i) .. "%", 12, main_text_color)
     end
-    --write(settings.text.centerxr, settings.cpu.y_total - settings.line.height, cpu .. "%", 12, main_text_color)
+    for i = 1, cpu_cores / 2 do
+        y = settings.cpu.y_util + (i - 1) * settings.line.interval - settings.line.height
+        write(settings.text.centerxr, y, cpu_percent(i + cpu_cores / 2) .. "%", 12, main_text_color)
+    end
 
     -- titles
-    write(settings.text.centerxl, settings.cpu.y_temp - settings.line.height, "CPU temperature", 12, main_text_color, "r")
-    write(settings.text.centerxl, settings.cpu.y_fan - settings.line.height, "CPU fan speed", 12, main_text_color, "r")
-    for i = 1, cpu_cores do
-        y = settings.cpu.y_temp + (i - 1) * settings.line.interval - settings.line.height
-        write(settings.text.startx, y, "CPU " .. i .. ": " .. cpu_freq(i) .. " MHz", 12, main_text_color, "r")
+    for i = 1, cpu_cores / 2 do
+        y = settings.cpu.y_util + (i - 1) * settings.line.interval - settings.line.height
+        write(settings.text.utilxr, y, cpu_freq(i) .. " MHz", 12, main_text_color, "r")
     end
-    --write(settings.text.startx, settings.cpu.y_total - settings.line.height, "total CPU", 12, main_text_color, "r")
+    for i = 1, cpu_cores / 2 do
+        y = settings.cpu.y_util + (i - 1) * settings.line.interval - settings.line.height
+        write(settings.text.startx, y, cpu_freq(i + cpu_cores / 2) .. " MHz", 12, main_text_color, "r")
+    end
 end
 
 function draw_gpu()
     write_bold(settings.line.endx, settings.gpu.separator + settings.line.height / 2, "GPU: " .. gpu_name(), 12, main_text_color)
     line(settings.line.startx, settings.gpu.separator, settings.line.endx + 180, settings.gpu.separator, settings.line.thickness, main_text_color, 1)
 
-    local gputemp   = gpu_temp()
     local gpufan    = gpu_fanspeed()
     local gpupower  = gpu_power()
     local gpuutil   = gpu_utilization()
     local gpuram    = gpu_vram_util()
+    local gpuencode = gpu_encode()
 
-    rectangle_rightleft(settings.line.centerxl, settings.gpu.y_temp, settings.line.width_2, settings.line.thickness, gputemp, 95, color_frompercent(tonumber(gputemp)/95))
     rectangle_rightleft(settings.line.centerxl, settings.gpu.y_fan, settings.line.width_2, settings.line.thickness, gpufan, 100, color_frompercent(tonumber(gpufan)))
+    write(settings.text.endx, settings.gpu.y_fan - settings.line.height, gpufan .. "%", 12, main_text_color)
+    write(settings.text.centerxl, settings.gpu.y_fan - settings.line.height, "Fan speed", 12, main_text_color, "r")
+
     rectangle_rightleft(settings.line.centerxl, settings.gpu.y_power, settings.line.width_2, settings.line.thickness, gpupower, 75, color_frompercent(tonumber(gpupower)/75))
-    rectangle_rightleft(settings.line.startx, settings.gpu.y_util, settings.line.width_2, settings.line.thickness, gpuutil, 100, color_frompercent(tonumber(gpuutil)))
-    rectangle_rightleft(settings.line.startx, settings.gpu.y_ram, settings.line.width_2, settings.line.thickness, gpuram, 4096, color_frompercent(tonumber(gpuram)/4096))
-
-    -- values
-    write(settings.text.endx, settings.gpu.y_temp - settings.line.height, gputemp .. "°C", 12, main_text_color)
-    write(settings.text.endx, settings.gpu.y_fan - settings.line.height, gpufan .. " %", 12, main_text_color)
-    write(settings.text.endx, settings.gpu.y_power - settings.line.height, gpupower .. " W", 12, main_text_color)
-    write(settings.text.centerxr, settings.gpu.y_util - settings.line.height, gpuutil .. " %", 12, main_text_color)
-    write(settings.text.centerxr, settings.gpu.y_ram - settings.line.height, gpuram .. " MiB", 12, main_text_color)
-
-    -- titles
-    write(settings.text.centerxl, settings.gpu.y_temp - settings.line.height, "GPU temperature", 12, main_text_color, "r")
-    write(settings.text.centerxl, settings.gpu.y_fan - settings.line.height, "GPU fan speed", 12, main_text_color, "r")
+    write(settings.text.endx, settings.gpu.y_power - settings.line.height, gpupower .. "W", 12, main_text_color)
     write(settings.text.centerxl, settings.gpu.y_power - settings.line.height, "Power usage", 12, main_text_color, "r")
-    write(settings.text.startx, settings.gpu.y_util - settings.line.height, "GPU utilization", 12, main_text_color, "r")
-    write(settings.text.startx, settings.gpu.y_ram - settings.line.height, "GPU RAM utilization", 12, main_text_color, "r")
+
+    rectangle_rightleft(settings.line.startx, settings.gpu.y_util, settings.line.width_2, settings.line.thickness, gpuutil, 100, color_frompercent(tonumber(gpuutil)))
+    write(settings.text.centerxr, settings.gpu.y_util - settings.line.height, tonumber(gpuutil) .. "%", 12, main_text_color)
+    write(settings.text.startx, settings.gpu.y_util - settings.line.height, "GPU-Util", 12, main_text_color, "r")
+
+    rectangle_rightleft(settings.line.startx, settings.gpu.y_encode, settings.line.width_2, settings.line.thickness, gpuencode, 95, color_frompercent(tonumber(gpuencode)))
+    write(settings.text.centerxr, settings.gpu.y_encode - settings.line.height, gpuencode .. "%", 12, main_text_color)
+    write(settings.text.startx, settings.gpu.y_encode - settings.line.height, "Encode-Util", 12, main_text_color, "r")
+
+    rectangle_rightleft(settings.line.startx, settings.gpu.y_ram, settings.line.width_2, settings.line.thickness, gpuram, 4096, color_frompercent(tonumber(gpuram)/4096))
+    write(settings.text.centerxr, settings.gpu.y_ram - settings.line.height, math.floor(tonumber(gpuram)/4096*100) .. " %", 12, main_text_color)
+    write(settings.text.startx, settings.gpu.y_ram - settings.line.height, "RAM:" .. gpuram .. "MiB", 12, main_text_color, "r")
 end
 
 function draw_memory()
-    write_bold(settings.line.endx, settings.mem.separator + settings.line.height / 2, "MEMORY: " .. memory_name(), 12, main_text_color)
-    line(settings.line.startx, settings.mem.separator, settings.line.endx + 240, settings.mem.separator, settings.line.thickness, main_text_color, 1)
+    write_bold(settings.line.endx, settings.mem.separator + settings.line.height / 2, "MEMORY", 12, main_text_color)
+    line(settings.line.startx, settings.mem.separator, settings.line.endx + 52, settings.mem.separator, settings.line.thickness, main_text_color, 1)
 
     -- processes list by mem consumption
     write_list_proccesses_mem(settings.text.endx, settings.mem.y_info, settings.line.info_height, 10, 12, main_text_color)
@@ -240,14 +278,11 @@ function draw_memory()
     local swp      = string.format("Swap: %s / %s", swap(), swap_max())
 
     rectangle_rightleft(settings.line.startx, settings.mem.y_ram, settings.line.width_2, settings.line.thickness, memperc, 100, color_frompercent(tonumber(memperc)))
-    rectangle_rightleft(settings.line.startx, settings.mem.y_swap, settings.line.width_2, settings.line.thickness, swapperc, 100, color_frompercent(tonumber(swapperc)))
-
-    -- values
     write(settings.text.centerxr, settings.mem.y_ram - settings.line.height, memperc .. "%", 12, main_text_color)
-    write(settings.text.centerxr, settings.mem.y_swap - settings.line.height, swapperc .. "%", 12, main_text_color)
-
-    -- titles
     write(settings.text.startx, settings.mem.y_ram - settings.line.height, mem, 12, main_text_color, "r")
+
+    rectangle_rightleft(settings.line.startx, settings.mem.y_swap, settings.line.width_2, settings.line.thickness, swapperc, 100, color_frompercent(tonumber(swapperc)))
+    write(settings.text.centerxr, settings.mem.y_swap - settings.line.height, swapperc .. "%", 12, main_text_color)
     write(settings.text.startx, settings.mem.y_swap - settings.line.height, swp, 12, main_text_color, "r")
 
     -- mem info
@@ -262,8 +297,8 @@ function draw_memory()
 end
 
 function draw_disks()
-    write_bold(settings.line.endx, settings.disk.separator + settings.line.height / 2, "FILE SYSTEMS", 12, main_text_color)
-    line(settings.line.startx, settings.disk.separator, settings.line.endx + 96, settings.disk.separator, settings.line.thickness, main_text_color, 1)
+    write_bold(settings.line.endx, settings.disk.separator + settings.line.height / 2, "DRIVES", 12, main_text_color)
+    line(settings.line.startx, settings.disk.separator, settings.line.endx + 52, settings.disk.separator, settings.line.thickness, main_text_color, 1)
 
     -- info
     local vals = {
@@ -273,17 +308,23 @@ function draw_disks()
     }
     write_line_by_line(settings.text.endx, settings.disk.y_info, settings.line.info_height, vals, main_text_color, 12, false)
 
-    --local ssdtemp       = ssd_temperature()
-    local root          = string.format("SSD: %s / %s", fs_used("/"), fs_size("/"))
-    local rootperc      = fs_used_perc("/")
+    local root_used = tonumber(pve_root_used())
+    local root_size = tonumber(pve_root_size())
+    local stor_size = tonumber(pve_store_size())
+    local stor_used = tonumber(pve_store_used()) * stor_size / 100
 
-    rectangle_rightleft(settings.line.startx, settings.disk.y_ssd, settings.line.width_4, settings.line.thickness, rootperc, 100, color_frompercent(tonumber(rootperc)))
+    local root          = string.format("SSD: %s / %s", math.floor(root_used + stor_used) .. "GiB", math.floor(root_size + stor_size) .. "GiB")
+    local rootperc      = math.floor((root_used + stor_used) / (root_size + stor_size) * 100)
+    local vm            = string.format("/dev/sda: %s / %s", fs_used("/"), fs_size("/"))
+    local vmperc        = tonumber(fs_used_perc("/"))
 
-    -- values
-    write(settings.text.midxl, settings.disk.y_ssd - settings.line.height, rootperc .. "%", 12, main_text_color)
+    rectangle_rightleft(settings.line.startx, settings.disk.y_ssd_util, settings.line.width_5, settings.line.thickness, rootperc, 100, color_frompercent(rootperc))
+    write(settings.text.midxl, settings.disk.y_ssd_util - settings.line.height, rootperc .. "%", 12, main_text_color)
+    write(settings.text.startx, settings.disk.y_ssd_util - settings.line.height, root, 12, main_text_color, "r")
 
-    -- titles
-    write(settings.text.startx, settings.disk.y_ssd - settings.line.height, root, 12, main_text_color, "r")
+    rectangle_rightleft(settings.line.startx, settings.disk.y_vdisk_util, settings.line.width_5, settings.line.thickness, vmperc, 100, color_frompercent(vmperc))
+    write(settings.text.midxl, settings.disk.y_vdisk_util - settings.line.height, vmperc .. "%", 12, main_text_color)
+    write(settings.text.startx, settings.disk.y_vdisk_util - settings.line.height, vm, 12, main_text_color, "r")
 end
 
 function draw_net()
@@ -312,9 +353,9 @@ function draw_net()
     local joediapnaperc = fs_used_perc("/media/joediapna-share")
     local userperc      = fs_used_perc("/media/joep")
 
-    rectangle_rightleft(settings.line.startx, settings.net.y_sh1, settings.line.width_4, settings.line.thickness, jodibooksperc, 100, color_frompercent(tonumber(jodibooksperc)))
-    rectangle_rightleft(settings.line.startx, settings.net.y_sh2, settings.line.width_4, settings.line.thickness, joediapnaperc, 100, color_frompercent(tonumber(joediapnaperc)))
-    rectangle_rightleft(settings.line.startx, settings.net.y_sh3, settings.line.width_4, settings.line.thickness, userperc, 100, color_frompercent(tonumber(userperc)))
+    rectangle_rightleft(settings.line.startx, settings.net.y_sh1, settings.line.width_5, settings.line.thickness, jodibooksperc, 100, color_frompercent(tonumber(jodibooksperc)))
+    rectangle_rightleft(settings.line.startx, settings.net.y_sh2, settings.line.width_5, settings.line.thickness, joediapnaperc, 100, color_frompercent(tonumber(joediapnaperc)))
+    rectangle_rightleft(settings.line.startx, settings.net.y_sh3, settings.line.width_5, settings.line.thickness, userperc, 100, color_frompercent(tonumber(userperc)))
 
     -- values
     write(settings.text.midxl, settings.net.y_sh1 - settings.line.height, jodibooksperc .. "%", 12, main_text_color)
@@ -338,7 +379,7 @@ function draw_server()
     local inlettemp2 = dell_inlet_temp("10.33.10.101", "ipmi_user", "fwCX4MCvjz3N5mRRtUBx")
     local fanspeed1a = hp_fan_speed("10.33.10.100", "ipmi_user", "pBjwGJ6Z9MD7msBV8Ym9", "'Fan 1'")
     local fanspeed1b = hp_fan_speed("10.33.10.100", "ipmi_user", "pBjwGJ6Z9MD7msBV8Ym9", "'Fan 3'")
-    local fanspeed2  = dell_fan_speed("10.33.10.101", "ipmi_user", "fwCX4MCvjz3N5mRRtUBx", "'Sys Fan1'")
+    local fanspeed2  = tonumber(dell_fan_speed("10.33.10.101", "ipmi_user", "fwCX4MCvjz3N5mRRtUBx", "'Sys Fan1'")) or 0
 
     rectangle_rightleft(settings.line.leftxr, settings.server.y1a, settings.line.width_3, settings.line.thickness, inlettemp1, 40, color_frompercent(tonumber(inlettemp1/40)))
 
@@ -350,7 +391,7 @@ function draw_server()
 
     rectangle_rightleft(settings.line.startx, settings.server.y1a, settings.line.width_3, settings.line.thickness, fanspeed1a, 100, color_frompercent(fanspeed1a))
     rectangle_rightleft(settings.line.startx, settings.server.y1b, settings.line.width_3, settings.line.thickness, fanspeed1b, 100, color_frompercent(fanspeed1b))
-    rectangle_rightleft(settings.line.startx, settings.server.y2, settings.line.width_3, settings.line.thickness, fanspeed2, 6400, color_frompercent(tonumber(fanspeed2/6400)))
+    rectangle_rightleft(settings.line.startx, settings.server.y2, settings.line.width_3, settings.line.thickness, fanspeed2, 6400, color_frompercent(fanspeed2/6400))
 
     -- values
     write(settings.text.endx, settings.server.y1a - settings.line.height, inlettemp1 .. "°C", 12, main_text_color)
@@ -362,7 +403,7 @@ function draw_server()
 
     write(settings.text.rightxl, settings.server.y1a - settings.line.height, math.floor(fanspeed1a/100*8750) .. " RPM", 12, main_text_color)
     write(settings.text.rightxl, settings.server.y1b - settings.line.height, math.floor(fanspeed1b/100*8750) .. " RPM", 12, main_text_color)
-    write(settings.text.rightxl, settings.server.y2 - settings.line.height, tonumber(math.floor(fanspeed2)) .. " RPM", 12, main_text_color)
+    write(settings.text.rightxl, settings.server.y2 - settings.line.height, math.floor(fanspeed2) .. " RPM", 12, main_text_color)
 
     -- titles
     write(settings.text.leftxr, settings.server.y1a - settings.line.height, "Inlet temp. SRV1", 12, main_text_color, "r")

@@ -33,6 +33,26 @@ function line(startx, starty, endx, endy, thick, color, alpha)
     cairo_stroke (cr)
 end
 
+function draw_graph(data, max_value, table_length, blx, bly, red, green, blue, alpha, width, cheight)
+    cairo_set_source_rgba (cr, red, green, blue, alpha)
+    cairo_set_line_width (cr, width)
+    for i = 1, table_length do
+
+        -- Calculate bar height.
+        bar_height = (cheight / max_value) * data[i]
+
+        -- Set start position for each bar, and modify with the value
+        -- of "i".
+        cairo_move_to (cr, blx + (width / 2) + ((i - 1) * width), bly)
+
+        -- Draw relative line, y becomes equal to bar height and
+        -- must be negative to draw up. 
+        cairo_rel_line_to (cr, 0, bar_height*-1)
+
+        -- Draw the line.
+        cairo_stroke (cr)
+    end
+end
 
 function ring_clockwise(x, y, radius, thickness, angle_begin, angle_end, value_str, max_value, fg_color)
     local value = tonumber(value_str)
@@ -227,14 +247,15 @@ function kernel()               return parse("kernel") end                  --  
 function system_name()          return parse("sysname") end                 --  ex: Linux
 function hostname()             return parse("nodename") end                --  ex: Hostname
 function os()                   return parse("execi 86400 lsb_release -sd") end --  ex: Ubuntu 20.04.3 LTS
-function arch()                 return parse("machine") end                 --  ex: x86_64
+--function arch()                 return parse("machine") end                 --  ex: x86_64
 function desktops()             return parse("desktop_number") end          --  total number of desktops
 function desktop()              return parse("desktop") end                 --  ex: 3 (current desktop)
-function desktop_name()         return parse("desktop_name") end            --  ex: Desktop 3
-function username()             return parse("user_names") end
+--function desktop_name()         return parse("desktop_name") end            --  ex: Desktop 3
+--function username()             return parse("user_names") end
 function cpu_name()             return parse("exec cat /proc/cpuinfo | grep 'name'| uniq | cut -c 14-54") end
-function cpu_temperature()      return parse("hwmon 1 temp 1") end          --  temperature in C°
-function cpu_fanspeed()         return parse("hwmon 2 fan 2") end           --  speed in RPM
+function cpu_temperature()      return parse("execi 1 ssh jpl-proxmox2-root 'cat /sys/class/hwmon/hwmon2/temp1_input'") end --  temperature in C°
+
+--function cpu_fanspeed()         return parse("execi 1 ssh jpl-proxmox2-root 'cat /sys/class/hwmon/hwmon2/temp1_input'") end --  speed in RPM
 function cpu_percent(n)
     if n == nil or n == "" then return parse("cpu") end
     if n > 0 and n <= cpu_cores    then return parse("cpu cpu" .. n)
@@ -245,7 +266,7 @@ function cpu_freq(n)
     if n > 0 and n <= cpu_cores    then return parse("freq " .. n)
     else                        return nil end
 end
-function ssd_temperature()      return parse("hddtemp /dev/sda") end        --  temperature in C°
+function ssd_temperature()      return parse("execi 10 ssh jpl-proxmox2-root 'smartctl -A /dev/nvme0 | grep 'Temperature:' | cut -c 37-38'") end        --  temperature in C°
 function fs_used(fs)
     if fs == nil           then return nil
     else                        return parse("fs_used " .. fs)
@@ -272,23 +293,24 @@ function fs_free(fs)
     end
 end
 function gpu_name()             return "NVIDIA " .. parse("exec nvidia-smi -L | cut -c 8-19") end
-function gpu_temp()             return parse("execi 60 nvidia-settings -query [gpu:0]/GPUCoreTemp -t") end
-function gpu_fanspeed()         return parse("execi 60 nvidia-smi | grep % | cut -c 3-4") end
-function gpu_utilization()      return parse("execi 60 nvidia-smi | grep % | cut -c 72-73") end
-function gpu_vram_util()        return parse("execi 60 nvidia-smi | grep % | cut -c 47-50") end
-function gpu_power()            return parse("execi 60 nvidia-smi | grep % | cut -c 32-33") end
-function vm_used(vm)            return parse("execi 60 virsh vol-info " .. vm .. " --pool " .. pool_name .. " | grep Allocation | awk '{print$2 $3}'") end
-function vm_size(vm)            return parse("execi 60 virsh vol-info " .. vm .. " --pool " .. pool_name .. " | grep Capacity | awk '{print$2 $3}'") end
-function vm_used_perc(vm)
-    local allocation = tonumber(parse("execi 60 virsh vol-info " .. vm .. " --pool " .. pool_name .. " | grep Allocation | awk '{print$2}'"))
-    local capacity = tonumber(parse("execi 60 virsh vol-info " .. vm .. " --pool " .. pool_name .. " | grep Capacity | awk '{print$2}'"))
-    if allocation == nil or capacity == nil    then return 0
-    else                        return math.modf(allocation / capacity * 100)
-    end
-end
+function gpu_temp()             return parse("execi 1 nvidia-settings -query [gpu:0]/GPUCoreTemp -t") end
+function gpu_fanspeed()         return parse("execi 1 nvidia-smi | grep % | cut -c 3-4") end
+function gpu_utilization()      return parse("execi 1 nvidia-smi | grep % | cut -c 72-73") end
+function gpu_encode()           return parse("execi 1 nvidia-settings -query [gpu:0]/VideoEncoderUtilization -t") end
+function gpu_vram_util()        return parse("execi 1 nvidia-smi | grep % | cut -c 47-50") end
+function gpu_power()            return parse("execi 1 nvidia-smi | grep % | cut -c 32-33") end
+-- function vm_used(vm)            return parse("execi 60 virsh vol-info " .. vm .. " --pool " .. pool_name .. " | grep Allocation | awk '{print$2 $3}'") end
+-- function vm_size(vm)            return parse("execi 60 virsh vol-info " .. vm .. " --pool " .. pool_name .. " | grep Capacity | awk '{print$2 $3}'") end
+-- function vm_used_perc(vm)
+--     local allocation = tonumber(parse("execi 60 virsh vol-info " .. vm .. " --pool " .. pool_name .. " | grep Allocation | awk '{print$2}'"))
+--     local capacity = tonumber(parse("execi 60 virsh vol-info " .. vm .. " --pool " .. pool_name .. " | grep Capacity | awk '{print$2}'"))
+--     if allocation == nil or capacity == nil    then return 0
+--     else                        return math.modf(allocation / capacity * 100)
+--     end
+-- end
 function load_avg()             return parse("loadavg") end                             --  system load averages
-function running_threads()      return parse("running_threads") end
-function memory_name()          return parse("exec sudo dmidecode --type memory | grep -m1 Manufacturer | cut -c 16-23") .. " " .. parse("exec sudo dmidecode --type memory | grep -m1 'Part Number' | cut -c 15-29") end
+--function running_threads()      return parse("running_threads") end
+--function memory_name()          return parse("exec sudo dmidecode --type memory | grep -m1 Manufacturer | cut -c 16-23") .. " " .. parse("exec sudo dmidecode --type memory | grep -m1 'Part Number' | cut -c 15-29") end
 function memory()               return parse("mem") end                                 --  amount of memory in use
 function memory_percent()       return parse("memperc") end                             --  percentage of memory in use
 function memory_max()           return parse("memmax") end                              --  total amount of memory
@@ -297,16 +319,17 @@ function memory_buffers()       return parse("buffers") end                     
 function swap()                 return parse("swap") end
 function swap_max()             return parse("swapmax") end
 function swap_percent()         return parse("swapperc") end
-function sys_temp_in()          return parse("hwmon 2 temp 1") end                      --  temperature in C°
-function sys_temperature()      return parse("hwmon 2 temp 2") end                      --  temperature in C°
-function sys_fanspeed1()        return parse("hwmon 2 fan 1") end                       --  speed in RPM
-function sys_fanspeed2()        return parse("hwmon 2 fan 3") end                       --  speed in RPM
+--function sys_temp_in()          return parse("hwmon 2 temp 1") end                      --  temperature in C°
+function sys_temperature()      return parse("execi 1 ssh jpl-proxmox2-root 'cat /sys/class/hwmon/hwmon3/temp1_input'") end --  temperature in C°
+function acpi_temperature()      return parse("execi 1 ssh jpl-proxmox2-root 'cat /sys/class/hwmon/hwmon0/temp1_input'") end --  temperature in C°
+--function sys_fanspeed1()        return parse("hwmon 2 fan 1") end                       --  speed in RPM
+--function sys_fanspeed2()        return parse("hwmon 2 fan 3") end                       --  speed in RPM
 function download_speed()       return parse("downspeed " .. net_interface) .. "/s" end --  ex: 930B or 3kb
 function download_total()       return parse("totaldown " .. net_interface) end
-function downspeedgraph()       return parse("downspeedgraph" .. net_interface) end
+--function downspeedgraph()       return parse("downspeedgraph" .. net_interface) end
 function upload_speed()         return parse("upspeed " .. net_interface) .. "/s" end   --  ex: 930B or 3kb
 function upload_total()         return parse("totalup " .. net_interface) end
-function upspeedgraph()         return parse("upspeedgraph" .. net_interface) end
+--function upspeedgraph()         return parse("upspeedgraph" .. net_interface) end
 function local_ip()             return parse("addr " .. net_interface) end               --  ex: 192.168.178.25
 function uptime()               return parse("uptime") end                              --  ex: 2d 13h 40m
 function time_hrmin()           return parse("time %R") end                             --  ex: 15:40
@@ -320,7 +343,11 @@ function time_year()            return parse("time %Y") end                     
 function diskio(device)         return parse("diskio " .. device) .. "/s" end           --  device ex: /dev/sda
 function diskio_read(device)    return parse("diskio_read " .. device) .. "/s" end
 function diskio_write(device)   return parse("diskio_write " .. device) .. "/s" end
-function diskiograph(device)    return parse("diskiograph " .. device) .. "/s" end      --  device ex: /dev/sda
+--function diskiograph(device)    return parse("diskiograph " .. device) .. "/s" end      --  device ex: /dev/sda
+function pve_root_used()        return parse("execi 60 ssh jpl-proxmox2-root 'df -h / | grep dev | cut -c 29-31'") end --  Space used in GiB
+function pve_root_size()        return parse("execi 60 ssh jpl-proxmox2-root 'df -h / | grep dev | cut -c 24-25'") end --  Total size used in GiB
+function pve_store_used()        return parse("execi 60 ssh jpl-proxmox2-root 'lvs | grep data | head -1 | cut -c 53-57'") end --  Space used in %
+function pve_store_size()        return parse("execi 60 ssh jpl-proxmox2-root 'lvs | grep data | head -1 | cut -c 33-38'") end --  Total size used in GiB
 function fetch_public_ip()
     local po = io.popen("wget http://ipinfo.io/ip -qO -")
     -- local po = io.popen("curl -s ifconfig.me/ip")
@@ -347,19 +374,19 @@ end
 --TEMP_SENSOR="01h"  # Exhaust Temp
 --TEMP_SENSOR="0Eh"  # CPU 1 Temp
 --TEMP_SENSOR="0Fh"  # CPU 2 Temp
-function dell_cpu_temp(ip, user, pw) return parse("execi 60 ipmitool -I lanplus -H " .. ip .. " -U " .. user .. " -P " .. pw .. " sdr type temperature | grep 0Eh | cut -d'|' -f5 | cut -d' ' -f2") end
-function dell_inlet_temp(ip, user, pw) return parse("execi 60 ipmitool -I lanplus -H " .. ip .. " -U " .. user .. " -P " .. pw .. " sdr type temperature | grep 04h | cut -d'|' -f5 | cut -d' ' -f2") end
-function dell_fan_speed(ip, user, pw, fan) return parse("execi 60 ipmitool -I lanplus -H " .. ip .. " -U " .. user .. " -P " .. pw .. " sensor reading " .. fan .. " | awk '{ print $NF }'") end
+function dell_cpu_temp(ip, user, pw) return parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -P " .. pw .. " sdr type temperature | grep 0Eh | cut -d'|' -f5 | cut -d' ' -f2") end
+function dell_inlet_temp(ip, user, pw) return parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -P " .. pw .. " sdr type temperature | grep 04h | cut -d'|' -f5 | cut -d' ' -f2") end
+function dell_fan_speed(ip, user, pw, fan) return parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -P " .. pw .. " sensor reading " .. fan .. " | awk '{ print $NF }'") end
 
 --HP servers
 --TEMP_SENSOR="03h"  # Inlet Temp
 --TEMP_SENSOR="04h"  # CPU 1 Temp
 --TEMP_SENSOR="05h"  # CPU 2 Temp
-function hp_cpu1_temp(ip, user, pw) return parse("execi 60 ipmitool -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sdr type temperature | grep 04h | cut -d'|' -f5 | cut -d' ' -f2") end
-function hp_cpu2_temp(ip, user, pw) return parse("execi 60 ipmitool -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sdr type temperature | grep 05h | cut -d'|' -f5 | cut -d' ' -f2") end
-function hp_inlet_temp(ip, user, pw) return parse("execi 60 ipmitool -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sdr type temperature | grep 03h | cut -d'|' -f5 | cut -d' ' -f2") end
+function hp_cpu1_temp(ip, user, pw) return parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sdr type temperature | grep 04h | cut -d'|' -f5 | cut -d' ' -f2") end
+function hp_cpu2_temp(ip, user, pw) return parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sdr type temperature | grep 05h | cut -d'|' -f5 | cut -d' ' -f2") end
+function hp_inlet_temp(ip, user, pw) return parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sdr type temperature | grep 03h | cut -d'|' -f5 | cut -d' ' -f2") end
 function hp_fan_speed(ip, user, pw, fan)
-    local fanspeed = parse("execi 60 ipmitool -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sensor reading " .. fan .. " | awk '{ print $NF }'")
+    local fanspeed = parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sensor reading " .. fan .. " | awk '{ print $NF }'")
     local fs1, fs2 = fanspeed:match("([^.]+).([^.]+)")
     return (tonumber(fs1) * 1000 + tonumber(fs2)) / 1000
 end

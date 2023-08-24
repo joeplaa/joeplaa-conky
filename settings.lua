@@ -25,14 +25,14 @@ use_critical_color = true
 --[[
 CPU Cores (threads really)
 ]]
-cpu_cores = 8
+cpu_cores = 12
 
 --[[
 EDIT THIS to match your network interface.
 You can find out by executing `ifconfig` or `ip link`.
 It might be "wlan0", "eth0", "wlp3s0" or something else
 ]]
-net_interface = "eno1"
+net_interface = "enp6s18"
 
 --[[
 this depends on your own internet speed
@@ -205,4 +205,3 @@ end
 if use_critical_color then color_critical = color4
 else color_critical = color_warning
 end
-

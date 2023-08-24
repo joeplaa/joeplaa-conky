@@ -2,7 +2,7 @@
 # https://askubuntu.com/a/438611
 
 ## Pause
-sleep 10
+#sleep 10
 
 ## Run conky
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
