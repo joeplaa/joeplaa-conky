@@ -23,22 +23,30 @@ use_warning_color  = true
 use_critical_color = true
 
 --[[
-CPU Cores (threads really)
+CPU Cores
 ]]
-cpu_cores = 12
+cpu_cores = 6
+cpu_threads = cpu_cores * 2
 
 --[[
 EDIT THIS to match your network interface.
 You can find out by executing `ifconfig` or `ip link`.
 It might be "wlan0", "eth0", "wlp3s0" or something else
 ]]
-net_interface = "enp6s18"
+net_interface = "eno0"
+br_interface = "br0"
 
 --[[
 this depends on your own internet speed
 ]]
-download_rate_maximum = 25000     -- kb
-upload_rate_maximum   = 25000     -- kb
+download_rate_maximum = 24141     -- kB
+upload_rate_maximum   = 24141     -- kB
+net_rate_maximum = 122070.3       -- kB
+
+--[[
+Max theoretical drive speeds
+]]
+nvme_throughput = 7880000         -- kB
 
 --[[
 KVM/QEMU/Libvirt pool name
