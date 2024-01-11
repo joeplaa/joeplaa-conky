@@ -364,6 +364,7 @@ function fetch_public_ip()
     -- local po = io.popen("curl -s ifconfig.me/ip")
     -- local po = io.popen("curl -s ident.me")
     -- local po = io.popen("curl -s api.ipify.org")
+---@diagnostic disable-next-line: need-check-nil
     local content = po:read("*a")
     if content == nil or content == "" or string.len(content) > 15  then
         return "None"
@@ -373,6 +374,7 @@ function fetch_public_ip()
 end
 function fetch_vpn_ip()
     local po = io.popen("curl -s ident.me")
+---@diagnostic disable-next-line: need-check-nil
     local content = po:read("*a")
     if content == nil or content == "" or string.len(content) > 15  then
         return "None"
@@ -385,19 +387,40 @@ end
 --TEMP_SENSOR="01h"  # Exhaust Temp
 --TEMP_SENSOR="0Eh"  # CPU 1 Temp
 --TEMP_SENSOR="0Fh"  # CPU 2 Temp
-function dell_cpu_temp(ip, user, pw) return parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -P " .. pw .. " sdr type temperature | grep 0Eh | cut -d'|' -f5 | cut -d' ' -f2") end
-function dell_inlet_temp(ip, user, pw) return parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -P " .. pw .. " sdr type temperature | grep 04h | cut -d'|' -f5 | cut -d' ' -f2") end
-function dell_fan_speed(ip, user, pw, fan) return parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -P " .. pw .. " sensor reading " .. fan .. " | awk '{ print $NF }'") end
+function dell_cpu_temp(ip, user, pw) return tonumber(parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -P " .. pw .. " sdr type temperature | grep 0Eh | cut -d'|' -f5 | cut -d' ' -f2")) or 0  end
+function dell_inlet_temp(ip, user, pw) return tonumber(parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -P " .. pw .. " sdr type temperature | grep 04h | cut -d'|' -f5 | cut -d' ' -f2")) or 0 end
+function dell_fan_speed(ip, user, pw, fan) return tonumber(parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -P " .. pw .. " sensor reading " .. fan .. " | awk '{ print $NF }'")) or 0 end
+function dell_pwr(ip, user, pw) return tonumber(parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -P " .. pw .. " sdr type current | grep 77h | cut -d'|' -f5 | cut -d' ' -f2")) or 0 end
 
 --HP servers
 --TEMP_SENSOR="03h"  # Inlet Temp
 --TEMP_SENSOR="04h"  # CPU 1 Temp
 --TEMP_SENSOR="05h"  # CPU 2 Temp
-function hp_cpu1_temp(ip, user, pw) return parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sdr type temperature | grep 04h | cut -d'|' -f5 | cut -d' ' -f2") end
-function hp_cpu2_temp(ip, user, pw) return parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sdr type temperature | grep 05h | cut -d'|' -f5 | cut -d' ' -f2") end
-function hp_inlet_temp(ip, user, pw) return parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sdr type temperature | grep 03h | cut -d'|' -f5 | cut -d' ' -f2") end
+--TEMP_SENSOR="0Ah"  # HD Max Temp
+--TEMP_SENSOR="0Ch"  # Chipset Temp
+--TEMP_SENSOR="1Dh"  # HD Controller Temp
+function hp_cpu1_temp(ip, user, pw) return tonumber(parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sdr type temperature | grep 04h | cut -d'|' -f5 | cut -d' ' -f2")) or 0 end
+function hp_cpu2_temp(ip, user, pw) return tonumber(parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sdr type temperature | grep 05h | cut -d'|' -f5 | cut -d' ' -f2")) or 0 end
+function hp_inlet_temp(ip, user, pw) return tonumber(parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sdr type temperature | grep 03h | cut -d'|' -f5 | cut -d' ' -f2")) or 0 end
+function hp_pch_temp(ip, user, pw) return tonumber(parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sdr type temperature | grep 0Ch | cut -d'|' -f5 | cut -d' ' -f2")) or 0 end
 function hp_fan_speed(ip, user, pw, fan)
     local fanspeed = parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sensor reading " .. fan .. " | awk '{ print $NF }'")
     local fs1, fs2 = fanspeed:match("([^.]+).([^.]+)")
     return (tonumber(fs1 or 0) * 1000 + tonumber(fs2 or 0)) / 1000
 end
+function hp_pwr(ip, user, pw) return tonumber(parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sdr type current | cut -d'|' -f5 | cut -d' ' -f2")) or 0 end
+
+--Supermicro servers
+--TEMP_SENSOR="01h"  # CPU Temp
+--TEMP_SENSOR="0Ah"  # PCH Temp
+--TEMP_SENSOR="0Bh"  # System Temp
+--TEMP_SENSOR="0Ah"  # Peripheral Temp
+function sm_cpu_temp(ip, user, pw) return tonumber(parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sdr type temperature | grep 01h | cut -d'|' -f5 | cut -d' ' -f2")) or 0 end
+function sm_pch_temp(ip, user, pw) return tonumber(parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sdr type temperature | grep 0Ah | cut -d'|' -f5 | cut -d' ' -f2")) or 0 end
+function sm_fan_speed(ip, user, pw, fan) return tonumber(parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sensor reading " .. fan .. " | awk '{ print $NF }'")) or 0 end
+
+function server_hostname(server) return parse("execi 10 ssh " .. server .. " 'cat /proc/sys/kernel/hostname'") end
+function server_kernel(server) return parse("execi 10 ssh " .. server .. " 'uname -r'") end
+function server_os(server) return parse("execi 10 ssh " .. server .. " 'lsb_release -sd'") end
+-- https://stackoverflow.com/a/69261076
+function server_uptime(server) return parse("execi 10 ssh " .. server .. " uptime -p | sed 's/up\\s*//g' | sed 's/\\s*weeks/w/g' | sed 's/\\s*week/w/g' | sed 's/\\s*days/d/g' | sed 's/\\s*day/d/g' | sed 's/\\s*hours/h/g' | sed 's/\\s*minutes/m/g'") end

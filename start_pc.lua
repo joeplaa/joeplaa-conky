@@ -84,11 +84,11 @@ settings.info.y_fan2            = settings.info.y_fan1 + settings.line.interval
 settings.temp.y                 = settings.info.y + 85
 settings.temp.label             = settings.temp.y + settings.line.section_text_interval
 settings.temp.value             = settings.temp.y - settings.line.temp
-settings.temp.x1                = settings.base.x - 200
-settings.temp.x2                = settings.temp.x1 + 40
-settings.temp.x3                = settings.temp.x2 + 40
-settings.temp.x4                = settings.temp.x3 + 40
-settings.temp.x5                = settings.temp.x4 + 40
+settings.temp.x1                = settings.base.x - 220
+settings.temp.x2                = settings.temp.x1 + 45
+settings.temp.x3                = settings.temp.x2 + 45
+settings.temp.x4                = settings.temp.x3 + 45
+settings.temp.x5                = settings.temp.x4 + 45
 settings.temp.label1            = settings.temp.x1 + 12
 settings.temp.label2            = settings.temp.x2 + 16
 settings.temp.label3            = settings.temp.x3 + 12
@@ -143,7 +143,6 @@ function start()
     draw_gpu1()
     draw_memory()
     draw_data()
-    draw_server()
 end
 
 function draw_clock()
@@ -361,56 +360,6 @@ function draw_data()
     rectangle_rightleft(settings.line.startx, settings.data.y_speed_write, settings.line.width_2, settings.line.thickness, writeraw, nvme_throughput, color_frompercent(writeraw/nvme_throughput))
     write(settings.text.centerxr, settings.data.y_speed_write - settings.line.height, writespeed, 12, main_text_color)
     write(settings.text.startx, settings.data.y_speed_write - settings.line.height, "Write", 12, main_text_color, "r")
-end
-
-function draw_server()
-    write_bold(settings.line.endx, settings.server.separator + settings.line.height / 2, "SERVERS", 12, main_text_color)
-    line(settings.line.startx, settings.server.separator, settings.line.endx + 56, settings.server.separator, settings.line.thickness, main_text_color, 1)
-
-    local cputemp1a  = tonumber(hp_cpu1_temp("10.33.10.100", "ipmi_user", "pBjwGJ6Z9MD7msBV8Ym9")) or 0
-    local cputemp1b  = tonumber(hp_cpu2_temp("10.33.10.100", "ipmi_user", "pBjwGJ6Z9MD7msBV8Ym9")) or 0
-    local cputemp2   = tonumber(dell_cpu_temp("10.33.10.101", "ipmi_user", "fwCX4MCvjz3N5mRRtUBx")) or 0
-    local inlettemp1 = tonumber(hp_inlet_temp("10.33.10.100", "ipmi_user", "pBjwGJ6Z9MD7msBV8Ym9")) or 0
-    local inlettemp2 = tonumber(dell_inlet_temp("10.33.10.101", "ipmi_user", "fwCX4MCvjz3N5mRRtUBx")) or 0
-    local fanspeed1a = hp_fan_speed("10.33.10.100", "ipmi_user", "pBjwGJ6Z9MD7msBV8Ym9", "'Fan 1'") or 0
-    local fanspeed1b = hp_fan_speed("10.33.10.100", "ipmi_user", "pBjwGJ6Z9MD7msBV8Ym9", "'Fan 3'") or 0
-    local fanspeed2  = tonumber(dell_fan_speed("10.33.10.101", "ipmi_user", "fwCX4MCvjz3N5mRRtUBx", "'Sys Fan1'")) or 0
-
-    rectangle_rightleft(settings.line.leftxr, settings.server.y1a, settings.line.width_3, settings.line.thickness, inlettemp1, 40, color_frompercent(inlettemp1/40))
-
-    rectangle_rightleft(settings.line.leftxr, settings.server.y2, settings.line.width_3, settings.line.thickness, inlettemp2, 40, color_frompercent(inlettemp2/40))
-
-    rectangle_rightleft(settings.line.midxr, settings.server.y1a, settings.line.width_3, settings.line.thickness, cputemp1a, 75, color_frompercent(cputemp1a/70))
-    rectangle_rightleft(settings.line.midxr, settings.server.y1b, settings.line.width_3, settings.line.thickness, cputemp1b, 75, color_frompercent(cputemp1b/70))
-    rectangle_rightleft(settings.line.midxr, settings.server.y2, settings.line.width_3, settings.line.thickness, cputemp2, 75, color_frompercent(cputemp2/70))
-
-    rectangle_rightleft(settings.line.startx, settings.server.y1a, settings.line.width_3, settings.line.thickness, fanspeed1a, 100, color_frompercent(fanspeed1a))
-    rectangle_rightleft(settings.line.startx, settings.server.y1b, settings.line.width_3, settings.line.thickness, fanspeed1b, 100, color_frompercent(fanspeed1b))
-    rectangle_rightleft(settings.line.startx, settings.server.y2, settings.line.width_3, settings.line.thickness, fanspeed2, 6400, color_frompercent(fanspeed2/6400))
-
-    -- values
-    write(settings.text.endx, settings.server.y1a - settings.line.height, inlettemp1 .. "°C", 12, main_text_color)
-    write(settings.text.endx, settings.server.y2 - settings.line.height, inlettemp2 .. "°C", 12, main_text_color)
-
-    write(settings.text.midxl, settings.server.y1a - settings.line.height, cputemp1a .. "°C", 12, main_text_color)
-    write(settings.text.midxl, settings.server.y1b - settings.line.height, cputemp1b .. "°C", 12, main_text_color)
-    write(settings.text.midxl, settings.server.y2 - settings.line.height, cputemp2 .. "°C", 12, main_text_color)
-
-    write(settings.text.rightxl, settings.server.y1a - settings.line.height, math.floor(fanspeed1a/100*8750) .. " RPM", 12, main_text_color)
-    write(settings.text.rightxl, settings.server.y1b - settings.line.height, math.floor(fanspeed1b/100*8750) .. " RPM", 12, main_text_color)
-    write(settings.text.rightxl, settings.server.y2 - settings.line.height, math.floor(fanspeed2) .. " RPM", 12, main_text_color)
-
-    -- titles
-    write(settings.text.leftxr, settings.server.y1a - settings.line.height, "Inlet temp. SRV1", 12, main_text_color, "r")
-    write(settings.text.leftxr, settings.server.y2 - settings.line.height, "Inlet temp. SRV2", 12, main_text_color, "r")
-
-    write(settings.text.midxr, settings.server.y1a - settings.line.height, "CPU1 SRV1 temp.", 12, main_text_color, "r")
-    write(settings.text.midxr, settings.server.y1b - settings.line.height, "CPU2 SRV1 temp.", 12, main_text_color, "r")
-    write(settings.text.midxr, settings.server.y2 - settings.line.height, "CPU SRV2 temp.", 12, main_text_color, "r")
-
-    write(settings.text.startx, settings.server.y1a - settings.line.height, "SRV1 fan speed", 12, main_text_color, "r")
-    write(settings.text.startx, settings.server.y1b - settings.line.height, "SRV1 fan speed", 12, main_text_color, "r")
-    write(settings.text.startx, settings.server.y2 - settings.line.height, "SRV2 fan speed", 12, main_text_color, "r")
 end
 
 function conky_main()

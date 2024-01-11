@@ -4,7 +4,7 @@ conky.config = {
     minimum_height = 1403,
     minimum_width = 592,
     gap_y = 32,
-    gap_x = 0,
+    gap_x = 603,
     -- --------------- Window Settings
     background = true,
     double_buffer = true,
@@ -17,13 +17,13 @@ conky.config = {
     own_window_argb_value = 160,
     --own_window_colour = '000000',
     stippled_borders = 0,
-    xinerama_head = 2,
+    --xinerama_head = 2,
     -- ----------------- Font
     override_utf8_locale = true,
     text_buffer_size = 2048,
     use_xft = true,
     -- ----------------- Other
-    lua_load = "start.lua",
+    lua_load = "start_servers.lua",
     lua_draw_hook_pre = "main",
     update_interval = 1,
 }
