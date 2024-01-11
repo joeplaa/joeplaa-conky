@@ -214,7 +214,7 @@ function draw_temps()
     local inlettemp5 = hp_inlet_temp("10.33.10.104", "ipmi_user", "rktmwwtLdeDk4YtWGQg2")
     local pchtemp4   = hp_pch_temp("10.33.10.103", "ipmi_user", "E77tnDFzx53c99ESD6m6")
     local pchtemp5   = hp_pch_temp("10.33.10.104", "ipmi_user", "rktmwwtLdeDk4YtWGQg2")
-    local pchtemp6   = sm_pch_temp("10.33.10.104", "ipmi_user", "Epmxd4LR8jbh6oJ4mpy")
+    local pchtemp6   = sm_pch_temp("10.33.10.105", "ipmi_user", "Epmxd4LR8jbh6oJ4mpy")
 
     -- Inlet temps
     rectangle_bottomup(settings.vert.x1, settings.temps.y1, settings.line.temp, settings.line.thickness, inlettemp2, max_inlet, color_frompercent(inlettemp2/max_inlet))
