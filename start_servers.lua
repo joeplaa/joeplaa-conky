@@ -111,8 +111,10 @@ settings.temps.y4               = settings.info.separator4 + 120
 settings.temps.label4           = settings.temps.y4 + settings.line.section_text_interval
 settings.temps.value4           = settings.temps.y4 - settings.line.temp
 
-settings.fans.y1                = settings.info.separator1 + 50
-settings.fans.value1            = settings.fans.y1 + 16
+settings.fans.y1_1              = settings.info.separator1 + 50
+settings.fans.value1_1          = settings.fans.y1_1 + 16
+settings.fans.y1_2              = settings.fans.y1_1 + 64
+settings.fans.value1_2          = settings.fans.y1_2 + 16
 settings.fans.y2_1              = settings.info.separator2 + 50
 settings.fans.value2_1          = settings.fans.y2_1 + 16
 settings.fans.y2_2              = settings.fans.y2_1 + 64
@@ -121,10 +123,8 @@ settings.fans.y3_1              = settings.info.separator3 + 50
 settings.fans.value3_1          = settings.fans.y3_1 + 16
 settings.fans.y3_2              = settings.fans.y3_1 + 64
 settings.fans.value3_2          = settings.fans.y3_2 + 16
-settings.fans.y4                = settings.info.separator4 + 50
-settings.fans.value4            = settings.fans.y4 + 16
 
-settings.power.separator        = settings.info.values4 + settings.line.section_interval * 6.5
+settings.power.separator        = settings.info.values3 + settings.line.section_interval * 6.5
 settings.power.total            = settings.power.separator + settings.line.section_text_interval
 settings.power.y1               = settings.temps.y1
 settings.power.label1           = settings.temps.label1
@@ -150,20 +150,8 @@ end
 function draw_info()
     write(settings.info.x, settings.info.y, "SERVERS", 56, main_text_color, "c")
 
-    write_bold(settings.line.endx, settings.info.separator1 + settings.line.height / 2, "S2", 12, main_text_color)
+    write_bold(settings.line.endx, settings.info.separator1 + settings.line.height / 2, "S4", 12, main_text_color)
     line(settings.line.startx, settings.info.separator1, settings.line.endx + 24, settings.info.separator1, settings.line.thickness, main_text_color, 1)
-    local vals = {
-        "Hostname: " .. server_hostname("jpl-truenas"),
-        "Uptime:   " .. server_uptime("jpl-truenas"),
-        "OS:       " .. server_os("jpl-truenas"),
-        "Kernel:   " .. server_kernel("jpl-truenas"),
-        "IPMI IP:  10.33.10.101",
-        "OS IP:    10.33.60.10",
-    }
-    write_line_by_line(settings.text.endx, settings.info.values1, settings.line.info_height, vals, main_text_color, 12, false)
-
-    write_bold(settings.line.endx, settings.info.separator2 + settings.line.height / 2, "S4", 12, main_text_color)
-    line(settings.line.startx, settings.info.separator2, settings.line.endx + 24, settings.info.separator2, settings.line.thickness, main_text_color, 1)
     local vals = {
         "Hostname: " .. server_hostname("jpl-proxmox4"),
         "Uptime:   " .. server_uptime("jpl-proxmox4"),
@@ -172,10 +160,10 @@ function draw_info()
         "IPMI IP:  10.33.10.103",
         "OS IP:    10.33.60.114",
     }
-    write_line_by_line(settings.text.endx, settings.info.values2, settings.line.info_height, vals, main_text_color, 12, false)
+    write_line_by_line(settings.text.endx, settings.info.values1, settings.line.info_height, vals, main_text_color, 12, false)
 
-    write_bold(settings.line.endx, settings.info.separator3 + settings.line.height / 2, "S5", 12, main_text_color)
-    line(settings.line.startx, settings.info.separator3, settings.line.endx + 24, settings.info.separator3, settings.line.thickness, main_text_color, 1)
+    write_bold(settings.line.endx, settings.info.separator2 + settings.line.height / 2, "S5", 12, main_text_color)
+    line(settings.line.startx, settings.info.separator2, settings.line.endx + 24, settings.info.separator2, settings.line.thickness, main_text_color, 1)
     local vals = {
         "Hostname: " .. server_hostname("jpl-proxmox5"),
         "Uptime:   " .. server_uptime("jpl-proxmox5"),
@@ -184,10 +172,10 @@ function draw_info()
         "IPMI IP:  10.33.10.104",
         "OS IP:    10.33.60.115",
     }
-    write_line_by_line(settings.text.endx, settings.info.values3, settings.line.info_height, vals, main_text_color, 12, false)
+    write_line_by_line(settings.text.endx, settings.info.values2, settings.line.info_height, vals, main_text_color, 12, false)
 
-    write_bold(settings.line.endx, settings.info.separator4 + settings.line.height / 2, "S6", 12, main_text_color)
-    line(settings.line.startx, settings.info.separator4, settings.line.endx + 24, settings.info.separator4, settings.line.thickness, main_text_color, 1)
+    write_bold(settings.line.endx, settings.info.separator3 + settings.line.height / 2, "S6", 12, main_text_color)
+    line(settings.line.startx, settings.info.separator3, settings.line.endx + 24, settings.info.separator3, settings.line.thickness, main_text_color, 1)
     local vals = {
         "Hostname: " .. server_hostname("jpl-proxmox6"),
         "Uptime:   " .. server_uptime("jpl-proxmox6"),
@@ -196,7 +184,7 @@ function draw_info()
         "IPMI IP:  10.33.10.105",
         "OS IP:    10.33.60.116",
     }
-    write_line_by_line(settings.text.endx, settings.info.values4, settings.line.info_height, vals, main_text_color, 12, false)
+    write_line_by_line(settings.text.endx, settings.info.values3, settings.line.info_height, vals, main_text_color, 12, false)
 end
 
 function draw_temps()
@@ -204,12 +192,10 @@ function draw_temps()
     local max_cpu = 75
     local max_pch = 95
 
-    local cputemp2   = dell_cpu_temp("10.33.10.101", "ipmi_user", "fwCX4MCvjz3N5mRRtUBx")
     local cputemp4   = hp_cpu1_temp("10.33.10.103", "ipmi_user", "E77tnDFzx53c99ESD6m6")
     local cputemp5a  = hp_cpu1_temp("10.33.10.104", "ipmi_user", "rktmwwtLdeDk4YtWGQg2")
     local cputemp5b  = hp_cpu2_temp("10.33.10.104", "ipmi_user", "rktmwwtLdeDk4YtWGQg2")
     local cputemp6   = sm_cpu_temp("10.33.10.105", "ipmi_user", "Epmxd4LR8jbh6oJ4mpy")
-    local inlettemp2 = dell_inlet_temp("10.33.10.101", "ipmi_user", "fwCX4MCvjz3N5mRRtUBx")
     local inlettemp4 = hp_inlet_temp("10.33.10.103", "ipmi_user", "E77tnDFzx53c99ESD6m6")
     local inlettemp5 = hp_inlet_temp("10.33.10.104", "ipmi_user", "rktmwwtLdeDk4YtWGQg2")
     local pchtemp4   = hp_pch_temp("10.33.10.103", "ipmi_user", "E77tnDFzx53c99ESD6m6")
@@ -217,111 +203,92 @@ function draw_temps()
     local pchtemp6   = sm_pch_temp("10.33.10.105", "ipmi_user", "Epmxd4LR8jbh6oJ4mpy")
 
     -- Inlet temps
-    rectangle_bottomup(settings.vert.x1, settings.temps.y1, settings.line.temp, settings.line.thickness, inlettemp2, max_inlet, color_frompercent(inlettemp2/max_inlet))
-    write(settings.vert.value1, settings.temps.value1 - settings.line.height, inlettemp2 .. "°C", 12, main_text_color)
+    rectangle_bottomup(settings.vert.x1, settings.temps.y1, settings.line.temp, settings.line.thickness, inlettemp4, max_inlet, color_frompercent(inlettemp4/max_inlet))
+    write(settings.vert.value1, settings.temps.value1 - settings.line.height, inlettemp4 .. "°C", 12, main_text_color)
     write(settings.vert.label1 - 8, settings.temps.label1 - settings.line.height, "IN", 12, main_text_color, "r")
 
-    rectangle_bottomup(settings.vert.x1, settings.temps.y2, settings.line.temp, settings.line.thickness, inlettemp4, max_inlet, color_frompercent(inlettemp4/max_inlet))
-    write(settings.vert.value1, settings.temps.value2 - settings.line.height, inlettemp4 .. "°C", 12, main_text_color)
+    rectangle_bottomup(settings.vert.x1, settings.temps.y2, settings.line.temp, settings.line.thickness, inlettemp5, max_inlet, color_frompercent(inlettemp5/max_inlet))
+    write(settings.vert.value1, settings.temps.value2 - settings.line.height, inlettemp5 .. "°C", 12, main_text_color)
     write(settings.vert.label1 - 8, settings.temps.label2 - settings.line.height, "IN", 12, main_text_color, "r")
 
-    rectangle_bottomup(settings.vert.x1, settings.temps.y3, settings.line.temp, settings.line.thickness, inlettemp5, max_inlet, color_frompercent(inlettemp5/max_inlet))
-    write(settings.vert.value1, settings.temps.value3 - settings.line.height, inlettemp5 .. "°C", 12, main_text_color)
-    write(settings.vert.label1 - 8, settings.temps.label3 - settings.line.height, "IN", 12, main_text_color, "r")
-
     -- CPU temps
-    rectangle_bottomup(settings.vert.x2, settings.temps.y1, settings.line.temp, settings.line.thickness, cputemp2, max_cpu, color_frompercent(cputemp2/max_cpu))
-    write(settings.vert.value2, settings.temps.value1 - settings.line.height, cputemp2 .. "°C", 12, main_text_color)
-    write(settings.vert.label2 - 4, settings.temps.label1 - settings.line.height, "CPU", 12, main_text_color, "r")
+    rectangle_bottomup(settings.vert.x2, settings.temps.y1, settings.line.temp, settings.line.thickness, cputemp4, max_cpu, color_frompercent(cputemp4/max_cpu))
+    write(settings.vert.value2, settings.temps.value1 - settings.line.height, cputemp4 .. "°C", 12, main_text_color)
+    write(settings.vert.label2, settings.temps.label1 - settings.line.height, "CPU1", 12, main_text_color, "r")
 
-    rectangle_bottomup(settings.vert.x2, settings.temps.y2, settings.line.temp, settings.line.thickness, cputemp4, max_cpu, color_frompercent(cputemp4/max_cpu))
-    write(settings.vert.value2, settings.temps.value2 - settings.line.height, cputemp4 .. "°C", 12, main_text_color)
+    rectangle_bottomup(settings.vert.x2, settings.temps.y2, settings.line.temp, settings.line.thickness, cputemp5a, max_cpu, color_frompercent(cputemp5a/max_cpu))
+    write(settings.vert.value2, settings.temps.value2 - settings.line.height, cputemp5a .. "°C", 12, main_text_color)
     write(settings.vert.label2, settings.temps.label2 - settings.line.height, "CPU1", 12, main_text_color, "r")
 
-    rectangle_bottomup(settings.vert.x2, settings.temps.y3, settings.line.temp, settings.line.thickness, cputemp5a, max_cpu, color_frompercent(cputemp5a/max_cpu))
-    write(settings.vert.value2, settings.temps.value3 - settings.line.height, cputemp5a .. "°C", 12, main_text_color)
-    write(settings.vert.label2, settings.temps.label3 - settings.line.height, "CPU1", 12, main_text_color, "r")
+    rectangle_bottomup(settings.vert.x3, settings.temps.y2, settings.line.temp, settings.line.thickness, cputemp5b, max_cpu, color_frompercent(cputemp5b/max_cpu))
+    write(settings.vert.value3, settings.temps.value2 - settings.line.height, cputemp5b .. "°C", 12, main_text_color)
+    write(settings.vert.label3, settings.temps.label2 - settings.line.height, "CPU2", 12, main_text_color, "r")
 
-    rectangle_bottomup(settings.vert.x3, settings.temps.y3, settings.line.temp, settings.line.thickness, cputemp5b, max_cpu, color_frompercent(cputemp5b/max_cpu))
-    write(settings.vert.value3, settings.temps.value3 - settings.line.height, cputemp5b .. "°C", 12, main_text_color)
-    write(settings.vert.label3, settings.temps.label3 - settings.line.height, "CPU2", 12, main_text_color, "r")
-
-    rectangle_bottomup(settings.vert.x1, settings.temps.y4, settings.line.temp, settings.line.thickness, cputemp6, max_cpu, color_frompercent(cputemp6/max_cpu))
-    write(settings.vert.value1, settings.temps.value4 - settings.line.height, cputemp6 .. "°C", 12, main_text_color)
-    write(settings.vert.label1 - 4, settings.temps.label4 - settings.line.height, "CPU", 12, main_text_color, "r")
+    rectangle_bottomup(settings.vert.x1, settings.temps.y3, settings.line.temp, settings.line.thickness, cputemp6, max_cpu, color_frompercent(cputemp6/max_cpu))
+    write(settings.vert.value1, settings.temps.value3 - settings.line.height, cputemp6 .. "°C", 12, main_text_color)
+    write(settings.vert.label1 - 4, settings.temps.label3 - settings.line.height, "CPU", 12, main_text_color, "r")
 
     -- PCH temps
-    rectangle_bottomup(settings.vert.x3, settings.temps.y2, settings.line.temp, settings.line.thickness, pchtemp4, max_pch, color_frompercent(pchtemp4/max_pch))
-    write(settings.vert.value3, settings.temps.value2 - settings.line.height, pchtemp4 .. "°C", 12, main_text_color)
-    write(settings.vert.label3 - 4, settings.temps.label2 - settings.line.height, "PCH", 12, main_text_color, "r")
+    rectangle_bottomup(settings.vert.x3, settings.temps.y1, settings.line.temp, settings.line.thickness, pchtemp4, max_pch, color_frompercent(pchtemp4/max_pch))
+    write(settings.vert.value3, settings.temps.value1 - settings.line.height, pchtemp4 .. "°C", 12, main_text_color)
+    write(settings.vert.label3 - 4, settings.temps.label1 - settings.line.height, "PCH", 12, main_text_color, "r")
 
-    rectangle_bottomup(settings.vert.x4, settings.temps.y3, settings.line.temp, settings.line.thickness, pchtemp5, max_pch, color_frompercent(pchtemp5/max_pch))
-    write(settings.vert.value4, settings.temps.value3 - settings.line.height, pchtemp5 .. "°C", 12, main_text_color)
-    write(settings.vert.label4 - 4, settings.temps.label3 - settings.line.height, "PCH", 12, main_text_color, "r")
+    rectangle_bottomup(settings.vert.x4, settings.temps.y2, settings.line.temp, settings.line.thickness, pchtemp5, max_pch, color_frompercent(pchtemp5/max_pch))
+    write(settings.vert.value4, settings.temps.value2 - settings.line.height, pchtemp5 .. "°C", 12, main_text_color)
+    write(settings.vert.label4 - 4, settings.temps.label2 - settings.line.height, "PCH", 12, main_text_color, "r")
 
-    rectangle_bottomup(settings.vert.x2, settings.temps.y4, settings.line.temp, settings.line.thickness, pchtemp6, max_pch, color_frompercent(pchtemp6/max_pch))
-    write(settings.vert.value2, settings.temps.value4 - settings.line.height, pchtemp6 .. "°C", 12, main_text_color)
-    write(settings.vert.label2 - 4, settings.temps.label4 - settings.line.height, "PCH", 12, main_text_color, "r")
+    rectangle_bottomup(settings.vert.x2, settings.temps.y3, settings.line.temp, settings.line.thickness, pchtemp6, max_pch, color_frompercent(pchtemp6/max_pch))
+    write(settings.vert.value2, settings.temps.value3 - settings.line.height, pchtemp6 .. "°C", 12, main_text_color)
+    write(settings.vert.label2 - 4, settings.temps.label3 - settings.line.height, "PCH", 12, main_text_color, "r")
 end
 
 function draw_fanspeeds()
-    local max_dell_fan_speed = 6400
     local max_hpdl380g9_fan_speed = 16500 -- Delta PFR0612XHE https://www.delta-fan.com/pfr0612xhe.html
     local max_hpml350g9_fan_speed = 11500 -- Delta PFR0912XHE https://www.delta-fan.com/products/pfr0912xhe-sp00.html
     local max_sm_fan_speed = 1600
 
-    local fanspeed2  = dell_fan_speed("10.33.10.101", "ipmi_user", "fwCX4MCvjz3N5mRRtUBx", "'Sys Fan1'")
     local fanspeed4a = hp_fan_speed("10.33.10.103", "ipmi_user", "E77tnDFzx53c99ESD6m6", "'Fan 3'")
     local fanspeed4b = hp_fan_speed("10.33.10.103", "ipmi_user", "E77tnDFzx53c99ESD6m6", "'Fan 6'")
     local fanspeed5a = hp_fan_speed("10.33.10.104", "ipmi_user", "rktmwwtLdeDk4YtWGQg2", "'Fan 1'")
     local fanspeed5b = hp_fan_speed("10.33.10.104", "ipmi_user", "rktmwwtLdeDk4YtWGQg2", "'Fan 5'")
     local fanspeed6  = sm_fan_speed("10.33.10.105", "ipmi_user", "Epmxd4LR8jbh6oJ4mpy", "'FAN1'")
 
-    ring_clockwise(settings.circ.x, settings.fans.y1, settings.line.radius, settings.line.thickness, 0, 360, fanspeed2, max_dell_fan_speed, color_frompercent(fanspeed2/max_dell_fan_speed))
-    write(settings.circ.value - 6, settings.fans.value1 - settings.line.height, math.floor(fanspeed2), 12, main_text_color, "c")
+    ring_clockwise(settings.circ.x, settings.fans.y1_1, settings.line.radius, settings.line.thickness, 0, 360, fanspeed4a, 100, color_frompercent(fanspeed4a))
+    write(settings.circ.value - 6, settings.fans.value1_1 - settings.line.height, math.floor(fanspeed4a/100*max_hpdl380g9_fan_speed), 12, main_text_color, "c")
 
-    ring_clockwise(settings.circ.x, settings.fans.y2_1, settings.line.radius, settings.line.thickness, 0, 360, fanspeed4a, 100, color_frompercent(fanspeed4a))
-    write(settings.circ.value - 6, settings.fans.value2_1 - settings.line.height, math.floor(fanspeed4a/100*max_hpdl380g9_fan_speed), 12, main_text_color, "c")
+    ring_clockwise(settings.circ.x, settings.fans.y1_2, settings.line.radius, settings.line.thickness, 0, 360, fanspeed4b, 100, color_frompercent(fanspeed4b))
+    write(settings.circ.value - 6, settings.fans.value1_2 - settings.line.height, math.floor(fanspeed4b/100*max_hpdl380g9_fan_speed), 12, main_text_color, "c")
 
-    ring_clockwise(settings.circ.x, settings.fans.y2_2, settings.line.radius, settings.line.thickness, 0, 360, fanspeed4b, 100, color_frompercent(fanspeed4b))
-    write(settings.circ.value - 6, settings.fans.value2_2 - settings.line.height, math.floor(fanspeed4b/100*max_hpdl380g9_fan_speed), 12, main_text_color, "c")
+    ring_clockwise(settings.circ.x, settings.fans.y2_1, settings.line.radius, settings.line.thickness, 0, 360, fanspeed5a, 100, color_frompercent(fanspeed5a))
+    write(settings.circ.value - 6, settings.fans.value2_1 - settings.line.height, math.floor(fanspeed5a/100*max_hpml350g9_fan_speed), 12, main_text_color, "c")
 
-    ring_clockwise(settings.circ.x, settings.fans.y3_1, settings.line.radius, settings.line.thickness, 0, 360, fanspeed5a, 100, color_frompercent(fanspeed5a))
-    write(settings.circ.value - 6, settings.fans.value3_1 - settings.line.height, math.floor(fanspeed5a/100*max_hpml350g9_fan_speed), 12, main_text_color, "c")
+    ring_clockwise(settings.circ.x, settings.fans.y2_2, settings.line.radius, settings.line.thickness, 0, 360, fanspeed5b, 100, color_frompercent(fanspeed5b))
+    write(settings.circ.value - 6, settings.fans.value2_2 - settings.line.height, math.floor(fanspeed5b/100*max_hpml350g9_fan_speed), 12, main_text_color, "c")
 
-    ring_clockwise(settings.circ.x, settings.fans.y3_2, settings.line.radius, settings.line.thickness, 0, 360, fanspeed5b, 100, color_frompercent(fanspeed5b))
-    write(settings.circ.value - 6, settings.fans.value3_2 - settings.line.height, math.floor(fanspeed5b/100*max_hpml350g9_fan_speed), 12, main_text_color, "c")
-
-    ring_clockwise(settings.circ.x, settings.fans.y4, settings.line.radius, settings.line.thickness, 0, 360, fanspeed6, max_sm_fan_speed, color_frompercent(fanspeed6/max_sm_fan_speed))
-    write(settings.circ.value - 6, settings.fans.value4 - settings.line.height, math.floor(fanspeed6), 12, main_text_color, "c")
+    ring_clockwise(settings.circ.x, settings.fans.y3_1, settings.line.radius, settings.line.thickness, 0, 360, fanspeed6, max_sm_fan_speed, color_frompercent(fanspeed6/max_sm_fan_speed))
+    write(settings.circ.value - 6, settings.fans.value3_1 - settings.line.height, math.floor(fanspeed6), 12, main_text_color, "c")
 end
 
 function draw_power()
     write_bold(settings.line.endx, settings.power.separator + settings.line.height / 2, "POWER USAGE [W]", 12, main_text_color)
     line(settings.line.startx, settings.power.separator, settings.line.endx + 120, settings.power.separator, settings.line.thickness, main_text_color, 1)
 
-    local max_t320_power = 990
     local max_hpdl380g9_power = 1000
     local max_hpml350g9_power = 1000
     -- local max_sm_power = 550
 
-    local power2 = dell_pwr("10.33.10.101", "ipmi_user", "fwCX4MCvjz3N5mRRtUBx")
     local power4 = hp_pwr("10.33.10.103", "ipmi_user", "E77tnDFzx53c99ESD6m6")
     local power5 = hp_pwr("10.33.10.104", "ipmi_user", "rktmwwtLdeDk4YtWGQg2")
 
-    write(settings.line.endx, settings.power.total + settings.line.height / 2, "Total power use: " .. power2 + power4 + power5 .. ' + ???', 12, main_text_color)
+    write(settings.line.endx, settings.power.total + settings.line.height / 2, "Total power use: " .. power4 + power5 .. ' + ???', 12, main_text_color)
 
-    rectangle_bottomup(settings.vert.x5, settings.power.y1, settings.line.temp, settings.line.thickness, power2, max_t320_power, color_frompercent(power2/max_t320_power))
-    write(settings.vert.value5 - 4, settings.power.value1 - settings.line.height, power2 .. " W", 12, main_text_color)
+    rectangle_bottomup(settings.vert.x5, settings.power.y1, settings.line.temp, settings.line.thickness, power4, max_hpdl380g9_power, color_frompercent(power4/max_hpdl380g9_power))
+    write(settings.vert.value5 - 4, settings.power.value1 - settings.line.height, power4 .. " W", 12, main_text_color)
     write(settings.vert.label5 - 12, settings.power.label1 - settings.line.height, "⚡", 16, main_text_color, "r")
 
-    rectangle_bottomup(settings.vert.x5, settings.power.y2, settings.line.temp, settings.line.thickness, power4, max_hpdl380g9_power, color_frompercent(power4/max_hpdl380g9_power))
-    write(settings.vert.value5 - 4, settings.power.value2 - settings.line.height, power4 .. " W", 12, main_text_color)
+    rectangle_bottomup(settings.vert.x5, settings.power.y2, settings.line.temp, settings.line.thickness, power5, max_hpml350g9_power, color_frompercent(power5/max_hpml350g9_power))
+    write(settings.vert.value5 - 4, settings.power.value2 - settings.line.height, power5 .. " W", 12, main_text_color)
     write(settings.vert.label5 - 12, settings.power.label2 - settings.line.height, "⚡", 16, main_text_color, "r")
-
-    rectangle_bottomup(settings.vert.x5, settings.power.y3, settings.line.temp, settings.line.thickness, power5, max_hpml350g9_power, color_frompercent(power5/max_hpml350g9_power))
-    write(settings.vert.value5 - 4, settings.power.value3 - settings.line.height, power5 .. " W", 12, main_text_color)
-    write(settings.vert.label5 - 12, settings.power.label3 - settings.line.height, "⚡", 16, main_text_color, "r")
 end
 
 function conky_main()

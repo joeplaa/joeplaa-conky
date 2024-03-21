@@ -229,9 +229,9 @@ function draw_gpu1()
     local gpupowerdraw  = tonumber(gpu_power_draw(1)) or 0
     local gpupowerlimit = tonumber(gpu_power_limit(1)) or 75
     local gpuutil       = tonumber(gpu_utilization(1))
-    local gpumemutil    = tonumber(gpu_mem_util(1))
     local gpumemused    = tonumber(gpu_mem_used(1))
     local gpumemtotal   = tonumber(gpu_mem_total(1))
+    local gpumemutil    = math.floor(gpumemused/gpumemtotal*100)
     local gpuencode     = tonumber(gpu_encode(1))
     local gpudecode     = tonumber(gpu_decode(1))
 
@@ -245,7 +245,7 @@ function draw_gpu1()
 
     rectangle_rightleft(settings.line.centerxl, settings.gpu1.y_ram, settings.line.width_2, settings.line.thickness, gpumemutil, 100, color_frompercent(gpumemutil))
     write(settings.text.endx, settings.gpu1.y_ram - settings.line.height, gpumemutil .. " %", 12, main_text_color)
-    write(settings.text.centerxl, settings.gpu1.y_ram - settings.line.height, "RAM " .. gpumemtotal .. " MiB", 12, main_text_color, "r")
+    write(settings.text.centerxl, settings.gpu1.y_ram - settings.line.height, "RAM " .. gpumemused .. " / " .. gpumemtotal .. " MiB", 12, main_text_color, "r")
 
     rectangle_rightleft(settings.line.startx, settings.gpu1.y_util, settings.line.width_2, settings.line.thickness, gpuutil, 100, color_frompercent(gpuutil))
     write(settings.text.centerxr, settings.gpu1.y_util - settings.line.height, gpuutil .. "%", 12, main_text_color)
@@ -350,8 +350,8 @@ function draw_data()
     -- Drive speeds
     local readspeed = diskio_read("/dev/nvme0n1")
     local writespeed = diskio_write("/dev/nvme0n1")
-    local readraw = tonumber(break_after_first_word(diskio_read("/dev/nvme0n1"), " "))
-    local writeraw = tonumber(break_after_first_word(diskio_write("/dev/nvme0n1"), " "))
+    local readraw = tonumber(break_after_first_word(readspeed, " "))
+    local writeraw = tonumber(break_after_first_word(writespeed, " "))
 
     rectangle_rightleft(settings.line.startx, settings.data.y_speed_read, settings.line.width_2, settings.line.thickness, readraw, nvme_throughput, color_frompercent(readraw/nvme_throughput))
     write(settings.text.centerxr, settings.data.y_speed_read - settings.line.height, readspeed, 12, main_text_color)
