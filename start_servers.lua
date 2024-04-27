@@ -154,51 +154,51 @@ end
 function draw_info()
     write(settings.info.x, settings.info.y, "SERVERS", 56, main_text_color, "c")
 
-    write_bold(settings.line.endx, settings.info.separator1 + settings.line.height / 2, "S2", 12, main_text_color)
+    write_bold(settings.line.endx, settings.info.separator1 + settings.line.height / 2, serverlabel1, 12, main_text_color)
     line(settings.line.startx, settings.info.separator1, settings.line.endx + 24, settings.info.separator1, settings.line.thickness, main_text_color, 1)
     local vals1 = {
-        "Hostname: " .. server_hostname("jpl-truenas-backup"),
-        "Uptime:   " .. server_uptime("jpl-truenas-backup"),
-        "OS:       " .. server_os("jpl-truenas-backup"),
-        "Kernel:   " .. server_kernel("jpl-truenas-backup"),
-        "IPMI IP:  10.33.10.101",
-        "OS IP:    10.33.10.20",
+        "Hostname: " .. server_hostname(hostname1),
+        "Uptime:   " .. server_uptime(hostname1),
+        "OS:       " .. server_os(hostname1),
+        "Kernel:   " .. server_kernel(hostname1),
+        "IPMI IP:  " .. ipmi_ip1,
+        "OS IP:    " .. host_ip1,
     }
     write_line_by_line(settings.text.endx, settings.info.values1, settings.line.info_height, vals1, main_text_color, 12, false)
 
-    write_bold(settings.line.endx, settings.info.separator2 + settings.line.height / 2, "S4", 12, main_text_color)
+    write_bold(settings.line.endx, settings.info.separator2 + settings.line.height / 2, serverlabel2, 12, main_text_color)
     line(settings.line.startx, settings.info.separator2, settings.line.endx + 24, settings.info.separator2, settings.line.thickness, main_text_color, 1)
     local vals2 = {
-        "Hostname: " .. server_hostname("jpl-proxmox4"),
-        "Uptime:   " .. server_uptime("jpl-proxmox4"),
-        "OS:       " .. server_os("jpl-proxmox4"),
-        "Kernel:   " .. server_kernel("jpl-proxmox4"),
-        "IPMI IP:  10.33.10.103",
-        "OS IP:    10.33.60.114",
+        "Hostname: " .. server_hostname(hostname2),
+        "Uptime:   " .. server_uptime(hostname2),
+        "OS:       " .. server_os(hostname2),
+        "Kernel:   " .. server_kernel(hostname2),
+        "IPMI IP:  " .. ipmi_ip2,
+        "OS IP:    " .. host_ip2,
     }
     write_line_by_line(settings.text.endx, settings.info.values2, settings.line.info_height, vals2, main_text_color, 12, false)
 
-    write_bold(settings.line.endx, settings.info.separator3 + settings.line.height / 2, "S5", 12, main_text_color)
+    write_bold(settings.line.endx, settings.info.separator3 + settings.line.height / 2, serverlabel3, 12, main_text_color)
     line(settings.line.startx, settings.info.separator3, settings.line.endx + 24, settings.info.separator3, settings.line.thickness, main_text_color, 1)
     local vals3 = {
-        "Hostname: " .. server_hostname("jpl-proxmox5"),
-        "Uptime:   " .. server_uptime("jpl-proxmox5"),
-        "OS:       " .. server_os("jpl-proxmox5"),
-        "Kernel:   " .. server_kernel("jpl-proxmox5"),
-        "IPMI IP:  10.33.10.104",
-        "OS IP:    10.33.60.115",
+        "Hostname: " .. server_hostname(hostname3),
+        "Uptime:   " .. server_uptime(hostname3),
+        "OS:       " .. server_os(hostname3),
+        "Kernel:   " .. server_kernel(hostname3),
+        "IPMI IP:  " .. ipmi_ip3,
+        "OS IP:    " .. host_ip3,
     }
     write_line_by_line(settings.text.endx, settings.info.values3, settings.line.info_height, vals3, main_text_color, 12, false)
 
-    write_bold(settings.line.endx, settings.info.separator4 + settings.line.height / 2, "S6", 12, main_text_color)
+    write_bold(settings.line.endx, settings.info.separator4 + settings.line.height / 2, serverlabel4, 12, main_text_color)
     line(settings.line.startx, settings.info.separator4, settings.line.endx + 24, settings.info.separator4, settings.line.thickness, main_text_color, 1)
     local vals4 = {
-        "Hostname: " .. "", -- server_hostname("jpl-proxmox6"),
-        "Uptime:   " .. "", -- server_uptime("jpl-proxmox6"),
-        "OS:       " .. "", -- server_os("jpl-proxmox6"),
-        "Kernel:   " .. "", -- server_kernel("jpl-proxmox6"),
-        "IPMI IP:  10.33.10.105",
-        "OS IP:    10.33.60.116",
+        "Hostname: " .. "", -- server_hostname(hostname4),
+        "Uptime:   " .. "", -- server_uptime(hostname4),
+        "OS:       " .. "", -- server_os(hostname4),
+        "Kernel:   " .. "", -- server_kernel(hostname4),
+        "IPMI IP:  " .. ipmi_ip4,
+        "OS IP:    " .. host_ip4,
     }
     write_line_by_line(settings.text.endx, settings.info.values4, settings.line.info_height, vals4, main_text_color, 12, false)
 end
@@ -208,17 +208,17 @@ function draw_temps()
     local max_cpu = 75
     local max_pch = 95
 
-    local cputemp2   = dell_cpu_temp("10.33.10.101", "ipmi_user", "fwCX4MCvjz3N5mRRtUBx")
-    local cputemp4   = hp_cpu1_temp("10.33.10.103", "ipmi_user", "E77tnDFzx53c99ESD6m6")
-    local cputemp5a  = hp_cpu1_temp("10.33.10.104", "ipmi_user", "rktmwwtLdeDk4YtWGQg2")
-    local cputemp5b  = hp_cpu2_temp("10.33.10.104", "ipmi_user", "rktmwwtLdeDk4YtWGQg2")
-    local cputemp6   = sm_cpu_temp("10.33.10.105", "ipmi_user", "Epmxd4LR8jbh6oJ4mpy")
-    local inlettemp2 = dell_inlet_temp("10.33.10.101", "ipmi_user", "fwCX4MCvjz3N5mRRtUBx")
-    local inlettemp4 = hp_inlet_temp("10.33.10.103", "ipmi_user", "E77tnDFzx53c99ESD6m6")
-    local inlettemp5 = hp_inlet_temp("10.33.10.104", "ipmi_user", "rktmwwtLdeDk4YtWGQg2")
-    local pchtemp4   = hp_pch_temp("10.33.10.103", "ipmi_user", "E77tnDFzx53c99ESD6m6")
-    local pchtemp5   = hp_pch_temp("10.33.10.104", "ipmi_user", "rktmwwtLdeDk4YtWGQg2")
-    local pchtemp6   = sm_pch_temp("10.33.10.105", "ipmi_user", "Epmxd4LR8jbh6oJ4mpy")
+    local cputemp2   = dell_cpu_temp(ipmi_ip1, ipmi_user1, ipmi_pass1)
+    local cputemp4   = hp_cpu1_temp(ipmi_ip2, ipmi_user2, ipmi_pass2)
+    local cputemp5a  = hp_cpu1_temp(ipmi_ip3, ipmi_user3, ipmi_pass3)
+    local cputemp5b  = hp_cpu2_temp(ipmi_ip3, ipmi_user3, ipmi_pass3)
+    local cputemp6   = sm_cpu_temp(ipmi_ip4, ipmi_user4, ipmi_pass4)
+    local inlettemp2 = dell_inlet_temp(ipmi_ip1, ipmi_user1, ipmi_pass1)
+    local inlettemp4 = hp_inlet_temp(ipmi_ip2, ipmi_user2, ipmi_pass2)
+    local inlettemp5 = hp_inlet_temp(ipmi_ip3, ipmi_user3, ipmi_pass3)
+    local pchtemp4   = hp_pch_temp(ipmi_ip2, ipmi_user2, ipmi_pass2)
+    local pchtemp5   = hp_pch_temp(ipmi_ip3, ipmi_user3, ipmi_pass3)
+    local pchtemp6   = sm_pch_temp(ipmi_ip4, ipmi_user4, ipmi_pass4)
 
     -- Inlet temps
     rectangle_bottomup(settings.vert.x1, settings.temps.y1, settings.line.temp, settings.line.thickness, inlettemp2, max_inlet, color_frompercent(inlettemp2/max_inlet))
@@ -274,12 +274,12 @@ function draw_fanspeeds()
     local max_hpml350g9_fan_speed = 11500 -- Delta PFR0912XHE https://www.delta-fan.com/products/pfr0912xhe-sp00.html
     local max_sm_fan_speed = 1600
 
-    local fanspeed2 = dell_fan_speed("10.33.10.101", "ipmi_user", "fwCX4MCvjz3N5mRRtUBx", "'Sys Fan1'")
-    local fanspeed4a = hp_fan_speed("10.33.10.103", "ipmi_user", "E77tnDFzx53c99ESD6m6", "'Fan 3'")
-    local fanspeed4b = hp_fan_speed("10.33.10.103", "ipmi_user", "E77tnDFzx53c99ESD6m6", "'Fan 6'")
-    local fanspeed5a = hp_fan_speed("10.33.10.104", "ipmi_user", "rktmwwtLdeDk4YtWGQg2", "'Fan 1'")
-    local fanspeed5b = hp_fan_speed("10.33.10.104", "ipmi_user", "rktmwwtLdeDk4YtWGQg2", "'Fan 5'")
-    local fanspeed6  = sm_fan_speed("10.33.10.105", "ipmi_user", "Epmxd4LR8jbh6oJ4mpy", "'FAN1'")
+    local fanspeed2 = dell_fan_speed(ipmi_ip1, ipmi_user1, ipmi_pass1, "'Sys Fan1'")
+    local fanspeed4a = hp_fan_speed(ipmi_ip2, ipmi_user2, ipmi_pass2, "'Fan 3'")
+    local fanspeed4b = hp_fan_speed(ipmi_ip2, ipmi_user2, ipmi_pass2, "'Fan 6'")
+    local fanspeed5a = hp_fan_speed(ipmi_ip3, ipmi_user3, ipmi_pass3, "'Fan 1'")
+    local fanspeed5b = hp_fan_speed(ipmi_ip3, ipmi_user3, ipmi_pass3, "'Fan 5'")
+    local fanspeed6  = sm_fan_speed(ipmi_ip4, ipmi_user4, ipmi_pass4, "'FAN1'")
 
     ring_clockwise(settings.circ.x, settings.fans.y1_1, settings.line.radius, settings.line.thickness, 0, 360, fanspeed2, max_dellt320_fan_speed, color_frompercent(fanspeed2/max_dellt320_fan_speed))
     write(settings.circ.value - 6, settings.fans.value1_1, math.floor(fanspeed2), 12, main_text_color, "c")
@@ -309,9 +309,9 @@ function draw_power()
     local max_hpml350g9_power = 1000
     -- local max_sm_power = 550
 
-    local power2 = dell_pwr("10.33.10.101", "ipmi_user", "fwCX4MCvjz3N5mRRtUBx")
-    local power4 = hp_pwr("10.33.10.103", "ipmi_user", "E77tnDFzx53c99ESD6m6")
-    local power5 = hp_pwr("10.33.10.104", "ipmi_user", "rktmwwtLdeDk4YtWGQg2")
+    local power2 = dell_pwr(ipmi_ip1, ipmi_user1, ipmi_pass1)
+    local power4 = hp_pwr(ipmi_ip2, ipmi_user2, ipmi_pass2)
+    local power5 = hp_pwr(ipmi_ip3, ipmi_user3, ipmi_pass3)
 
     write(settings.line.endx, settings.power.total + settings.line.height / 2, "Total power use: " .. power2 + power4 + power5 .. " W", 12, main_text_color)
 

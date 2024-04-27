@@ -1,3 +1,5 @@
+----------------------------------------------
+-- Start editing
 
 --[[
 possible values of THEME
@@ -65,6 +67,7 @@ public_ip_refresh_rate = 60     -- secondes
 public_ip = nil
 vpn_ip = nil
 
+-- Stop editing
 ----------------------------------------------
 
 if THEME == "monochrome dark" then

@@ -10,6 +10,7 @@
 require "cairo"
 require "imlib2"
 require "settings"
+require "env"
 
 function image(x, y, file)
     if file == nil then return end
