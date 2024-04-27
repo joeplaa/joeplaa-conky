@@ -49,11 +49,6 @@ Max theoretical drive speeds
 nvme_throughput = 7880000         -- kB
 
 --[[
-KVM/QEMU/Libvirt pool name
-]]
-pool_name = 'default'
-
---[[
 Default font used by the convinient functions like write() and write_bold()
 You can use _write() to choose another font
 ]]
