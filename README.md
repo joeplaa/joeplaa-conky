@@ -2,6 +2,35 @@
 
 Based on Pomaria-Side Conky: <https://www.github.com/SZinedine/pomaria-side>
 
+## Hardware specs
+
+PC:
+    - Lenovo P340
+    - CPU: Intel Xeon W-2150 (6-core, 12 threads)
+    - GPU1: Nvidia Quadro P620
+    - SSD: Samsung NVMe PCIe gen 3x4
+    - Nic: 1 Gbit (configured as bridge)
+
+Server 1:
+    - Dell T320
+    - CPU: single
+    - OS: Truenas Scale
+
+Server 2:
+    - HP DL380p G9
+    - CPU: single
+    - OS: Proxmox
+
+Server 3:
+    - HP ML350p G9
+    - CPU: dual
+    - OS: Proxmox
+
+Server 4:
+    - Custom build, Supermicro X10SRiF
+    - CPU: single
+    - OS: Proxmox
+
 ## Download and Launch
 
 ```sh
