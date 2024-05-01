@@ -27,7 +27,7 @@ Server 3:
     - OS: Proxmox
 
 Server 4:
-    - Custom build, Supermicro X10SRiF
+    - Custom build, Supermicro X10SRi-F
     - CPU: single
     - OS: Proxmox
 
@@ -42,11 +42,11 @@ conky -c conkyrc_server
 
 ## Edit / customize
 
-- Edit `settings.lua` to choose your network interface, Internet speed and other settings.
+- Edit `settings.lua` to choose your network interface, internet speed and other settings.
 - Create `env.lua` and add server credentials and data
 
     ```lua
-    serverlabel1 = "S2"
+    serverlabel1 = "..."
     hostname1 = "..."
     host_ip1 = "..."
     ipmi_ip1 = "..."
@@ -75,7 +75,8 @@ conky -c conkyrc_server
     ipmi_pass4 = "..."
     ```
 
-- Edit `start.lua` to re-arrange.
+- Edit `start_pc.lua` to re-arrange.
+- Edit `start_server.lua` to re-arrange.
 - Edit `own_window_argb_value = 64` in `conkyrc` to change transparency.
 
 ## Launch on startup (Ubuntu)
@@ -84,13 +85,13 @@ Go to "Activities" or "Applications" and search for "Startup". Open the "Startup
 
 Add a new program:
 
-- Name: `Conky System Monitoring`
+- Name: `Conky PC`
 - Command: `<path to repository>/joeplaa-conky/start_conky_pc.sh`
 - Comment: leave blank or enter whatever you like
 
 Add a new program:
 
-- Name: `Conky System Monitoring`
+- Name: `Conky Servers`
 - Command: `<path to repository>/joeplaa-conky/start_conky_server.sh`
 - Comment: leave blank or enter whatever you like
 

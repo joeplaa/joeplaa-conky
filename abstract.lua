@@ -383,6 +383,9 @@ function fetch_vpn_ip()
         return content
     end
 end
+
+--- IPMI ---
+
 --Dell servers
 --TEMP_SENSOR="04h"  # Inlet Temp
 --TEMP_SENSOR="01h"  # Exhaust Temp
