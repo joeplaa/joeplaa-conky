@@ -41,14 +41,21 @@ br_interface = "br0"
 --[[
 this depends on your own internet speed
 ]]
-download_rate_maximum = 24141     -- kB
-upload_rate_maximum   = 24141     -- kB
-net_rate_maximum = 122070.3       -- kB
+download_rate_max = 200 -- mbit
+upload_rate_max = 200 -- mbit
+download_rate_maximum = download_rate_max * 122.0703125 -- KiB
+upload_rate_maximum = upload_rate_max * 122.0703125 -- KiB
+--[[
+this depends on your own network speed
+]]
+net_rate_max = 1 -- gbit
+net_rate_maximum = net_rate_max * 122070.3125 -- KiB
 
 --[[
 Max theoretical drive speeds
 ]]
-nvme_throughput = 7880000         -- kB
+nvme_max = 3.938 --GB/s
+nvme_throughput = nvme_max * 976562.5 -- KiB
 
 --[[
 Default font used by the convinient functions like write() and write_bold()
@@ -63,7 +70,7 @@ advice: use the variable public_ip instead of the function public_ip()
 which is called every `public_ip_refresh_rate` secondes
 ]]
 use_public_ip = true
-public_ip_refresh_rate = 60     -- secondes
+public_ip_refresh_rate = 60 -- seconds
 public_ip = nil
 vpn_ip = nil
 
