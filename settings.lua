@@ -48,7 +48,7 @@ upload_rate_maximum = upload_rate_max * 122.0703125 -- KiB
 --[[
 this depends on your own network speed
 ]]
-net_rate_max = 1 -- gbit
+net_rate_max = 10 -- gbit
 net_rate_maximum = net_rate_max * 122070.3125 -- KiB
 
 --[[
