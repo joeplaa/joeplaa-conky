@@ -35,8 +35,8 @@ EDIT THIS to match your network interface.
 You can find out by executing `ifconfig` or `ip link`.
 It might be "wlan0", "eth0", "wlp3s0" or something else
 ]]
-net_interface = "eno0"
-br_interface = "br0"
+net_interface  = "br0" --LAN interface
+net_interface2 = "vlan80" --SAN interface
 
 --[[
 this depends on your own internet speed

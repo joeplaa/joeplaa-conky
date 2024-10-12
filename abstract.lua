@@ -334,19 +334,28 @@ function swap()                 return parse("swap") end
 function swap_max()             return parse("swapmax") end
 function swap_percent()         return parse("swapperc") end
 --function sys_temp_in()          return parse("hwmon 2 temp 1") end                      --  temperature in C°
-function pch_temperature()      return parse("hwmon 3 temp 1") end --  temperature in C°
+function pch_temperature()      return parse("hwmon 4 temp 1") end --  temperature in C°
 function acpi_temperature()     return parse("hwmon 0 temp 1") end --  temperature in C°
 --function sys_fanspeed1()        return parse("hwmon 2 fan 1") end                       --  speed in RPM
 --function sys_fanspeed2()        return parse("hwmon 2 fan 3") end                       --  speed in RPM
-function download_speed()       return parse("downspeed " .. br_interface) .. "/s" end   --  ex: 930B or 3kb
-function download_speed_raw()   return parse("downspeedf " .. br_interface) end
-function download_total()       return parse("totaldown " .. br_interface) end
---function downspeedgraph()       return parse("downspeedgraph" .. br_interface) end
-function upload_speed()         return parse("upspeed " .. br_interface) .. "/s" end     --  ex: 930B or 3kb
-function upload_speed_raw()     return parse("upspeedf " .. br_interface) end
-function upload_total()         return parse("totalup " .. br_interface) end
---function upspeedgraph()         return parse("upspeedgraph" .. br_interface) end
-function local_ip()             return parse("addr " .. br_interface) end               --  ex: 192.168.178.25
+function download_speed()       return parse("downspeed " .. net_interface) .. "/s" end   --  ex: 930B or 3kb
+function download_speed_raw()   return parse("downspeedf " .. net_interface) end
+function download_total()       return parse("totaldown " .. net_interface) end
+--function downspeedgraph()       return parse("downspeedgraph" .. net_interface) end
+function upload_speed()         return parse("upspeed " .. net_interface) .. "/s" end     --  ex: 930B or 3kb
+function upload_speed_raw()     return parse("upspeedf " .. net_interface) end
+function upload_total()         return parse("totalup " .. net_interface) end
+--function upspeedgraph()         return parse("upspeedgraph" .. net_interface) end
+function local_ip()             return parse("addr " .. net_interface) end               --  ex: 192.168.178.25
+function download_speed2()      return parse("downspeed " .. net_interface2) .. "/s" end   --  ex: 930B or 3kb
+function download_speed_raw2()  return parse("downspeedf " .. net_interface2) end
+function download_total2()      return parse("totaldown " .. net_interface2) end
+--function downspeedgraph2()     return parse("downspeedgraph" .. net_interface2) end
+function upload_speed2()        return parse("upspeed " .. net_interface2) .. "/s" end     --  ex: 930B or 3kb
+function upload_speed_raw2()    return parse("upspeedf " .. net_interface2) end
+function upload_total2()        return parse("totalup " .. net_interface2) end
+--function upspeedgraph2()        return parse("upspeedgraph" .. net_interface2) end
+function local_ip2()            return parse("addr " .. net_interface2) end               --  ex: 192.168.178.25
 function uptime()               return parse("uptime") end                              --  ex: 2d 13h 40m
 function time_hrmin()           return parse("time %R") end                             --  ex: 15:40
 function time_hrminsec()        return parse("time %T") end                             --  ex: 15:30:25
