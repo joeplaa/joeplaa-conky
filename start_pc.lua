@@ -124,7 +124,7 @@ settings.net.y_speed_up         = settings.net.y_speed_down + settings.line.inte
 settings.net.y_speed_down2      = settings.net.y_speed_up + settings.line.interval
 settings.net.y_speed_up2        = settings.net.y_speed_down2 + settings.line.interval
 
-settings.data.separator         = settings.net.y_speed_up2 + 1.5 * settings.line.info_height
+settings.data.separator         = settings.net.y_speed_up2 + 4.5 * settings.line.info_height
 settings.data.y_speeds          = settings.data.separator + settings.line.section_text_interval
 settings.data.y_ssd_util        = settings.data.separator + settings.line.interval
 settings.data.y_sh1             = settings.data.y_ssd_util + settings.line.interval
@@ -291,7 +291,7 @@ end
 
 function draw_net()
     write_bold(settings.line.endx, settings.net.separator + settings.line.height / 2, "NETWORK", 12, main_text_color)
-    line(settings.line.startx, settings.net.separator, settings.line.endx + 128, settings.net.separator, settings.line.thickness, main_text_color, 1)
+    line(settings.line.startx, settings.net.separator, settings.line.endx + 60, settings.net.separator, settings.line.thickness, main_text_color, 1)
 
     -- Network info
     local vals = {
@@ -301,11 +301,18 @@ function draw_net()
         "Total up (SAN):   " .. upload_total2(),
     }
     if use_public_ip then
-        table.insert(vals, "PUB IP: " .. public_ip)
-        table.insert(vals, "VPN IP: " .. vpn_ip)
+        table.insert(vals, "PUB IPv4: " .. public_ip4)
+        table.insert(vals, "PUB IPv6: " .. public_ip6)
+        table.insert(vals, "VPN IPv4: " .. vpn_ip4)
     end
-    table.insert(vals, "LAN IP: " .. local_ip())
-    table.insert(vals, "SAN IP: " .. local_ip2())
+
+    lanip6_1, lanip6_2, lanip6_3 = local_ip6_lan():match("([^,]+),([^,]+),([^,]+)")
+    sanip6_1, sanip6_2 = local_ip6_san():match("([^,]+),([^,]+)")
+
+    table.insert(vals, "LAN IPv4: " .. local_ip4_lan())
+    table.insert(vals, "LAN IPv6: " .. lanip6_2:gsub("%s+", ""))
+    table.insert(vals, "          " .. lanip6_3:gsub("%s+", ""))
+    table.insert(vals, "SAN IPv6: " .. sanip6_2:gsub("%s+", ""))
     write_line_by_line(settings.text.endx, settings.net.y_info_net, settings.line.info_height, vals, main_text_color, 12, false)
 
     -- Network speeds
@@ -337,7 +344,7 @@ end
 
 function draw_data()
     write_bold(settings.line.endx, settings.data.separator + settings.line.height / 2, "STORAGE", 12, main_text_color)
-    line(settings.line.startx, settings.data.separator, settings.line.endx + 128, settings.data.separator, settings.line.thickness, main_text_color, 1)
+    line(settings.line.startx, settings.data.separator, settings.line.endx + 60, settings.data.separator, settings.line.thickness, main_text_color, 1)
 
     -- Local volumes
     local root          = string.format("/: %s / %s", fs_used("/"), fs_size("/"))
@@ -387,11 +394,17 @@ function conky_main()
     local number_updates = tonumber(updates())
     if number_updates > time_before_start then
         if use_public_ip then
-            if public_ip == nil or public_ip == "None" or (number_updates%public_ip_refresh_rate) == 0 then
-                public_ip = fetch_public_ip()
+            if public_ip4 == nil or public_ip4 == "None" or (number_updates%public_ip_refresh_rate) == 0 then
+                public_ip4 = fetch_public_ip(4)
             end
-            if vpn_ip == nil or vpn_ip == "None" or (number_updates%public_ip_refresh_rate) == 0 then
-                vpn_ip = fetch_vpn_ip()
+            if public_ip6 == nil or public_ip6 == "None" or (number_updates%public_ip_refresh_rate) == 0 then
+                public_ip6 = fetch_public_ip(6)
+            end
+            if vpn_ip4 == nil or vpn_ip4 == "None" or (number_updates%public_ip_refresh_rate) == 0 then
+                vpn_ip4 = fetch_vpn_ip(4)
+            end
+            if vpn_ip6 == nil or vpn_ip6 == "None" or (number_updates%public_ip_refresh_rate) == 0 then
+                vpn_ip6 = fetch_vpn_ip(6)
             end
         end
 

@@ -346,7 +346,8 @@ function upload_speed()         return parse("upspeed " .. net_interface) .. "/s
 function upload_speed_raw()     return parse("upspeedf " .. net_interface) end
 function upload_total()         return parse("totalup " .. net_interface) end
 --function upspeedgraph()         return parse("upspeedgraph" .. net_interface) end
-function local_ip()             return parse("addr " .. net_interface) end               --  ex: 192.168.178.25
+function local_ip4_lan()        return parse("addrs " .. net_interface) end               --  ex: 192.168.178.25
+function local_ip6_lan()        return parse("v6addrs " .. net_interface) end               --  ex: 
 function download_speed2()      return parse("downspeed " .. net_interface2) .. "/s" end   --  ex: 930B or 3kb
 function download_speed_raw2()  return parse("downspeedf " .. net_interface2) end
 function download_total2()      return parse("totaldown " .. net_interface2) end
@@ -355,7 +356,7 @@ function upload_speed2()        return parse("upspeed " .. net_interface2) .. "/
 function upload_speed_raw2()    return parse("upspeedf " .. net_interface2) end
 function upload_total2()        return parse("totalup " .. net_interface2) end
 --function upspeedgraph2()        return parse("upspeedgraph" .. net_interface2) end
-function local_ip2()            return parse("addr " .. net_interface2) end               --  ex: 192.168.178.25
+function local_ip6_san()        return parse("v6addrs " .. net_interface2) end               --  ex: 
 function uptime()               return parse("uptime") end                              --  ex: 2d 13h 40m
 function time_hrmin()           return parse("time %R") end                             --  ex: 15:40
 function time_hrminsec()        return parse("time %T") end                             --  ex: 15:30:25
@@ -369,24 +370,29 @@ function diskio(device)         return parse("diskio " .. device) .. "/s" end   
 function diskio_read(device)    return parse("diskio_read " .. device) .. "/s" end
 function diskio_write(device)   return parse("diskio_write " .. device) .. "/s" end
 --function diskiograph(device)    return parse("diskiograph " .. device) .. "/s" end      --  device ex: /dev/sda
-function fetch_public_ip()
-    local po = io.popen("wget http://ipinfo.io/ip -qO -")
-    -- local po = io.popen("curl -s ifconfig.me/ip")
-    -- local po = io.popen("curl -s ident.me")
-    -- local po = io.popen("curl -s api.ipify.org")
+function fetch_public_ip(type)
+    local po = nil
+    if type == 4 then
+        po = io.popen("curl -4 -s https://ipinfo.io/ip")
+        -- po = io.popen("curl -4 -s ifconfig.me/ip")
+        -- po = io.popen("curl -4 -s ident.me")
+        -- po = io.popen("curl -4 -s api.ipify.org")
+    else
+        po = io.popen("curl -s https://v6.ipinfo.io/ip")
+    end
 ---@diagnostic disable-next-line: need-check-nil
     local content = po:read("*a")
-    if content == nil or content == "" or string.len(content) > 15  then
+    if content == nil or content == "" then
         return "None"
     else
         return content
     end
 end
-function fetch_vpn_ip()
-    local po = io.popen("curl -s ident.me")
+function fetch_vpn_ip(type)
+    local po = io.popen("curl -" .. type .. " -s ident.me")
 ---@diagnostic disable-next-line: need-check-nil
     local content = po:read("*a")
-    if content == nil or content == "" or string.len(content) > 15  then
+    if content == nil or content == "" then
         return "None"
     else
         return content
