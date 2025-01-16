@@ -300,9 +300,11 @@ function draw_net()
         "Total down (SAN): " .. download_total2(),
         "Total up (SAN):   " .. upload_total2(),
     }
+
+    local prefix = public_ip6:sub(1, 15)
     if use_public_ip then
         table.insert(vals, "PUB IPv4: " .. public_ip4)
-        table.insert(vals, "PUB IPv6: " .. public_ip6)
+        table.insert(vals, "PUB IPv6: " .. prefix .. ":/48")
         table.insert(vals, "VPN IPv4: " .. vpn_ip4)
     end
 
