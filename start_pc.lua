@@ -312,8 +312,8 @@ function draw_net()
     sanip6_1, sanip6_2 = local_ip6_san():match("([^,]+),([^,]+)")
 
     table.insert(vals, "LAN IPv4: " .. local_ip4_lan())
-    table.insert(vals, "LAN IPv6: " .. lanip6_2:gsub("%s+", ""))
-    table.insert(vals, "          " .. lanip6_3:gsub("%s+", ""))
+    table.insert(vals, "LAN IPv6: " .. lanip6_1:gsub("%s+", ""))
+    table.insert(vals, "          " .. lanip6_2:gsub("%s+", ""))
     table.insert(vals, "SAN IPv6: " .. sanip6_2:gsub("%s+", ""))
     write_line_by_line(settings.text.endx, settings.net.y_info_net, settings.line.info_height, vals, main_text_color, 12, false)
 
