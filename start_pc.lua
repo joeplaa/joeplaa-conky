@@ -124,7 +124,7 @@ settings.net.y_speed_up         = settings.net.y_speed_down + settings.line.inte
 settings.net.y_speed_down2      = settings.net.y_speed_up + settings.line.interval
 settings.net.y_speed_up2        = settings.net.y_speed_down2 + settings.line.interval
 
-settings.data.separator         = settings.net.y_speed_up2 + 4.5 * settings.line.info_height
+settings.data.separator         = settings.net.y_speed_up2 + 5.5 * settings.line.info_height
 settings.data.y_speeds          = settings.data.separator + settings.line.section_text_interval
 settings.data.y_ssd_util        = settings.data.separator + settings.line.interval
 settings.data.y_sh1             = settings.data.y_ssd_util + settings.line.interval
@@ -314,6 +314,7 @@ function draw_net()
     table.insert(vals, "LAN IPv4: " .. local_ip4_lan())
     table.insert(vals, "LAN IPv6: " .. lanip6_1:gsub("%s+", ""))
     table.insert(vals, "          " .. lanip6_2:gsub("%s+", ""))
+    table.insert(vals, "          " .. lanip6_3:gsub("%s+", ""))
     table.insert(vals, "SAN IPv6: " .. sanip6_2:gsub("%s+", ""))
     write_line_by_line(settings.text.endx, settings.net.y_info_net, settings.line.info_height, vals, main_text_color, 12, false)
 
