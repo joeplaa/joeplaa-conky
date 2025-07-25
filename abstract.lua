@@ -251,6 +251,19 @@ function break_after_first_word(string, delimiter)
     return first_word
 end
 
+-- string utils
+function string:contains(sub)
+    return self:find(sub, 1, true) ~= nil
+end
+
+function string:startswith(start)
+    return self:sub(1, #start) == start
+end
+
+function string:endswith(ending)
+    return ending == "" or self:sub(-#ending) == ending
+end
+
 -- functions to fetch some important system info
 -- for other variables, see: <http://conky.sourceforge.net/variables.html>
 function updates()              return parse("updates") end
@@ -276,7 +289,7 @@ function cpu_freq(n)
     if n > 0 and n <= cpu_threads    then return parse("freq " .. n)
     else                        return nil end
 end
-function ssd_temperature()      return parse("hwmon 1 temp 1") end        --  temperature in C°
+function ssd_temperature()      return parse("hwmon 0 temp 1") end        --  temperature in C°
 function fs_used(fs)
     if fs == nil           then return nil
     else                        return parse("fs_used " .. fs)
@@ -334,7 +347,7 @@ function swap()                 return parse("swap") end
 function swap_max()             return parse("swapmax") end
 function swap_percent()         return parse("swapperc") end
 --function sys_temp_in()          return parse("hwmon 2 temp 1") end                      --  temperature in C°
-function pch_temperature()      return parse("hwmon 4 temp 1") end --  temperature in C°
+function pch_temperature()      return parse("hwmon 2 temp 1") end --  temperature in C°
 function acpi_temperature()     return parse("hwmon 0 temp 1") end --  temperature in C°
 --function sys_fanspeed1()        return parse("hwmon 2 fan 1") end                       --  speed in RPM
 --function sys_fanspeed2()        return parse("hwmon 2 fan 3") end                       --  speed in RPM

@@ -83,7 +83,7 @@ settings.info.y_fan2            = settings.info.y_fan1 + settings.line.interval
 settings.temp.y                 = settings.info.y + 85
 settings.temp.label             = settings.temp.y + settings.line.section_text_interval
 settings.temp.value             = settings.temp.y - settings.line.temp
-settings.temp.x1                = settings.base.x - 220
+settings.temp.x1                = settings.base.x - 140
 settings.temp.x2                = settings.temp.x1 + 45
 settings.temp.x3                = settings.temp.x2 + 45
 settings.temp.x4                = settings.temp.x3 + 45
@@ -124,7 +124,7 @@ settings.net.y_speed_up         = settings.net.y_speed_down + settings.line.inte
 settings.net.y_speed_down2      = settings.net.y_speed_up + settings.line.interval
 settings.net.y_speed_up2        = settings.net.y_speed_down2 + settings.line.interval
 
-settings.data.separator         = settings.net.y_speed_up2 + 5.5 * settings.line.info_height
+settings.data.separator         = settings.net.y_speed_up2 + 6.5 * settings.line.info_height
 settings.data.y_speeds          = settings.data.separator + settings.line.section_text_interval
 settings.data.y_ssd_util        = settings.data.separator + settings.line.interval
 settings.data.y_sh1             = settings.data.y_ssd_util + settings.line.interval
@@ -167,8 +167,8 @@ function draw_temp()
     local cputemp  = tonumber(cpu_temperature())
     local gputemp  = tonumber(gpu_temp(1))
     local ssdtemp  = tonumber(ssd_temperature())
-    local pchtemp  = tonumber(pch_temperature())
-    local acpitemp = tonumber(acpi_temperature())
+    --local pchtemp  = tonumber(pch_temperature())
+    --local acpitemp = tonumber(acpi_temperature())
 
     rectangle_bottomup(settings.temp.x1, settings.temp.y, settings.line.temp, settings.line.thickness, cputemp, 100, color_frompercent(cputemp/100))
     write(settings.temp.value1, settings.temp.value - settings.line.height, cputemp .. "°C", 12, main_text_color)
@@ -178,17 +178,17 @@ function draw_temp()
     write(settings.temp.value2, settings.temp.value - settings.line.height, gputemp .. "°C", 12, main_text_color)
     write(settings.temp.label2, settings.temp.label - settings.line.height, "GPU", 12, main_text_color, "r")
 
-    rectangle_bottomup(settings.temp.x3, settings.temp.y, settings.line.temp, settings.line.thickness, pchtemp, 100, color_frompercent(pchtemp/100))
-    write(settings.temp.value3, settings.temp.value - settings.line.height, pchtemp .. "°C", 12, main_text_color)
-    write(settings.temp.label3, settings.temp.label - settings.line.height, "PCH", 12, main_text_color, "r")
+    rectangle_bottomup(settings.temp.x3, settings.temp.y, settings.line.temp, settings.line.thickness, ssdtemp, 86.8, color_frompercent(ssdtemp/86.8))
+    write(settings.temp.value3, settings.temp.value - settings.line.height, ssdtemp .. "°C", 12, main_text_color)
+    write(settings.temp.label3, settings.temp.label - settings.line.height, "SSD", 12, main_text_color, "r")
 
-    rectangle_bottomup(settings.temp.x4, settings.temp.y, settings.line.temp, settings.line.thickness, ssdtemp, 86.8, color_frompercent(ssdtemp/86.8))
-    write(settings.temp.value4, settings.temp.value - settings.line.height, ssdtemp .. "°C", 12, main_text_color)
-    write(settings.temp.label4, settings.temp.label - settings.line.height, "SSD", 12, main_text_color, "r")
+    -- rectangle_bottomup(settings.temp.x3, settings.temp.y, settings.line.temp, settings.line.thickness, pchtemp, 100, color_frompercent(pchtemp/100))
+    -- write(settings.temp.value3, settings.temp.value - settings.line.height, pchtemp .. "°C", 12, main_text_color)
+    -- write(settings.temp.label3, settings.temp.label - settings.line.height, "PCH", 12, main_text_color, "r")
 
-    rectangle_bottomup(settings.temp.x5, settings.temp.y, settings.line.temp, settings.line.thickness, acpitemp, 70, color_frompercent(acpitemp/70))
-    write(settings.temp.value5, settings.temp.value - settings.line.height, acpitemp .. "°C", 12, main_text_color)
-    write(settings.temp.label5, settings.temp.label - settings.line.height, "ACPI", 12, main_text_color, "r")
+    -- rectangle_bottomup(settings.temp.x5, settings.temp.y, settings.line.temp, settings.line.thickness, acpitemp, 70, color_frompercent(acpitemp/70))
+    -- write(settings.temp.value5, settings.temp.value - settings.line.height, acpitemp .. "°C", 12, main_text_color)
+    -- write(settings.temp.label5, settings.temp.label - settings.line.height, "ACPI", 12, main_text_color, "r")
 end
 
 function draw_cpu()
@@ -196,7 +196,7 @@ function draw_cpu()
     line(settings.line.startx, settings.cpu.separator, settings.line.endx + 308, settings.cpu.separator, settings.line.thickness, main_text_color, 1)
 
     --local cpufanspeed   = cpu_fanspeed()
-    
+
     --rectangle_rightleft(settings.line.centerxl, settings.cpu.y_fan, settings.line.width_2, settings.line.thickness, cpufanspeed, 1550, color_frompercent(tonumber(cpufanspeed/1550)))
     --write(settings.text.endx, settings.cpu.y_fan - settings.line.height, cpufanspeed .. " RPM", 12, main_text_color)
     --write(settings.text.centerxl, settings.cpu.y_fan - settings.line.height, "CPU fan speed", 12, main_text_color, "r")
@@ -315,7 +315,8 @@ function draw_net()
     table.insert(vals, "LAN IPv6: " .. lanip6_1:gsub("%s+", ""))
     table.insert(vals, "          " .. lanip6_2:gsub("%s+", ""))
     table.insert(vals, "          " .. lanip6_3:gsub("%s+", ""))
-    table.insert(vals, "SAN IPv6: " .. sanip6_2:gsub("%s+", ""))
+    table.insert(vals, "SAN IPv6: " .. sanip6_1:gsub("%s+", ""))
+    table.insert(vals, "          " .. sanip6_2:gsub("%s+", ""))
     write_line_by_line(settings.text.endx, settings.net.y_info_net, settings.line.info_height, vals, main_text_color, 12, false)
 
     -- Network speeds

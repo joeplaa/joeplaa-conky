@@ -11,33 +11,12 @@ PC:
     - SSD: Samsung NVMe PCIe gen 3x4
     - Nic: 1 Gbit (configured as bridge)
 
-Server 1:
-    - Dell T320
-    - CPU: single
-    - OS: Truenas Scale
-
-Server 2:
-    - HP DL380p G9
-    - CPU: single
-    - OS: Proxmox
-
-Server 3:
-    - HP ML350p G9
-    - CPU: dual
-    - OS: Proxmox
-
-Server 4:
-    - Custom build, Supermicro X10SRi-F
-    - CPU: single
-    - OS: Proxmox
-
 ## Download and Launch
 
 ```sh
 git clone https://www.github.com/joeplaa/joeplaa-conky
 cd joeplaa-conky
-conky -c conkyrc_pc
-conky -c conkyrc_server
+conky -c conkyrc
 ```
 
 ## Edit / customize
@@ -75,8 +54,7 @@ conky -c conkyrc_server
     ipmi_pass4 = "..."
     ```
 
-- Edit `start_pc.lua` to re-arrange.
-- Edit `start_server.lua` to re-arrange.
+- Edit `start.lua` to re-arrange.
 - Edit `own_window_argb_value = 64` in `conkyrc` to change transparency.
 
 ## Launch on startup (Ubuntu)
@@ -86,13 +64,7 @@ Go to "Activities" or "Applications" and search for "Startup". Open the "Startup
 Add a new program:
 
 - Name: `Conky PC`
-- Command: `<path to repository>/joeplaa-conky/start_conky_pc.sh`
-- Comment: leave blank or enter whatever you like
-
-Add a new program:
-
-- Name: `Conky Servers`
-- Command: `<path to repository>/joeplaa-conky/start_conky_server.sh`
+- Command: `<path to repository>/joeplaa-conky/start_conky.sh`
 - Comment: leave blank or enter whatever you like
 
 ## Dependencies
