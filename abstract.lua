@@ -241,19 +241,19 @@ function color_convert(colour, alpha)
 	return ((colour / 0x10000) % 0x100) / 255., ((colour / 0x100) % 0x100) / 255., (colour % 0x100) / 255., alpha
 end
 
-function break_after_first_word(string, delimiter)
+function break_after_first_word(str, delimiter)
     local first_word = ""
-    local start, endpos = string.find(string, delimiter, 1)
+    local start, endpos = string.find(str, delimiter, 1)
     if start ~= nil then
-        first_word = string.sub(string, 1, start -1)
+        first_word = string.sub(str, 1, start -1)
     end
 
     return first_word
 end
 
 -- string utils
-function string:contains(sub)
-    return self:find(sub, 1, true) ~= nil
+function string:contains(substr)
+    return self:find(substr, 1, true) ~= nil
 end
 
 function string:startswith(start)
@@ -271,13 +271,13 @@ function kernel()               return parse("kernel") end                  --  
 function system_name()          return parse("sysname") end                 --  ex: Linux
 function hostname()             return parse("nodename") end                --  ex: Hostname
 function os()                   return parse("execi 86400 lsb_release -sd") end --  ex: Ubuntu 20.04.3 LTS
---function arch()                 return parse("machine") end                 --  ex: x86_64
-function desktops()             return parse("desktop_number") end          --  total number of desktops
-function desktop()              return parse("desktop") end                 --  ex: 3 (current desktop)
+function arch()                 return parse("machine") end                 --  ex: x86_64
+--function desktops()             return parse("desktop_number") end          --  total number of desktops
+--function desktop()              return parse("desktop") end                 --  ex: 3 (current desktop)
 --function desktop_name()         return parse("desktop_name") end            --  ex: Desktop 3
 --function username()             return parse("user_names") end
 function cpu_name()             return parse("exec cat /proc/cpuinfo | grep 'name'| uniq | cut -c 14-54") end
-function cpu_temperature()      return parse("hwmon 2 temp 1") end --  temperature in C°
+function cpu_temperature()      return parse("hwmon 1 temp 1") end --  temperature in C°
 --function cpu_fanspeed()         return parse("hwmon 2 fan 2") end --  speed in RPM
 function cpu_percent(n)
     if n == nil or n == "" then return parse("cpu") end
@@ -337,7 +337,7 @@ function gpu_power_limit(gpu)   return parse("execi 1 nvidia-smi --query-gpu=pow
 -- end
 function load_avg()             return parse("loadavg") end                             --  system load averages
 --function running_threads()      return parse("running_threads") end
---function memory_name()          return parse("exec sudo dmidecode --type memory | grep -m1 Manufacturer | cut -c 16-23") .. " " .. parse("exec sudo dmidecode --type memory | grep -m1 'Part Number' | cut -c 15-29") end
+function memory_name()          return parse("exec sudo dmidecode --type memory | grep -m1 Manufacturer | cut -c 16-23") .. " " .. parse("exec sudo dmidecode --type memory | grep -m1 'Part Number' | cut -c 15-29") end
 function memory()               return parse("mem") end                                 --  amount of memory in use
 function memory_percent()       return parse("memperc") end                             --  percentage of memory in use
 function memory_max()           return parse("memmax") end                              --  total amount of memory
@@ -347,8 +347,8 @@ function swap()                 return parse("swap") end
 function swap_max()             return parse("swapmax") end
 function swap_percent()         return parse("swapperc") end
 --function sys_temp_in()          return parse("hwmon 2 temp 1") end                      --  temperature in C°
-function pch_temperature()      return parse("hwmon 2 temp 1") end --  temperature in C°
-function acpi_temperature()     return parse("hwmon 0 temp 1") end --  temperature in C°
+--function pch_temperature()      return parse("hwmon 2 temp 1") end --  temperature in C°
+--function acpi_temperature()     return parse("hwmon 0 temp 1") end --  temperature in C°
 --function sys_fanspeed1()        return parse("hwmon 2 fan 1") end                       --  speed in RPM
 --function sys_fanspeed2()        return parse("hwmon 2 fan 3") end                       --  speed in RPM
 function download_speed()       return parse("downspeed " .. net_interface) .. "/s" end   --  ex: 930B or 3kb
@@ -419,10 +419,10 @@ end
 --TEMP_SENSOR="01h"  # Exhaust Temp
 --TEMP_SENSOR="0Eh"  # CPU 1 Temp
 --TEMP_SENSOR="0Fh"  # CPU 2 Temp
-function dell_cpu_temp(ip, user, pw) return tonumber(parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -P " .. pw .. " sdr type temperature | grep 0Eh | cut -d'|' -f5 | cut -d' ' -f2")) or 0  end
-function dell_inlet_temp(ip, user, pw) return tonumber(parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -P " .. pw .. " sdr type temperature | grep 04h | cut -d'|' -f5 | cut -d' ' -f2")) or 0 end
-function dell_fan_speed(ip, user, pw, fan) return tonumber(parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -P " .. pw .. " sensor reading " .. fan .. " | awk '{ print $NF }'")) or 0 end
-function dell_pwr(ip, user, pw) return tonumber(parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -P " .. pw .. " sdr type current | grep 77h | cut -d'|' -f5 | cut -d' ' -f2")) or 0 end
+--function dell_cpu_temp(ip, user, pw) return tonumber(parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -P " .. pw .. " sdr type temperature | grep 0Eh | cut -d'|' -f5 | cut -d' ' -f2")) or 0  end
+--function dell_inlet_temp(ip, user, pw) return tonumber(parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -P " .. pw .. " sdr type temperature | grep 04h | cut -d'|' -f5 | cut -d' ' -f2")) or 0 end
+--function dell_fan_speed(ip, user, pw, fan) return tonumber(parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -P " .. pw .. " sensor reading " .. fan .. " | awk '{ print $NF }'")) or 0 end
+--function dell_pwr(ip, user, pw) return tonumber(parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -P " .. pw .. " sdr type current | grep 77h | cut -d'|' -f5 | cut -d' ' -f2")) or 0 end
 
 --HP servers
 --TEMP_SENSOR="03h"  # Inlet Temp
@@ -431,28 +431,28 @@ function dell_pwr(ip, user, pw) return tonumber(parse("execi 60 ipmitool -C 3 -I
 --TEMP_SENSOR="0Ah"  # HD Max Temp
 --TEMP_SENSOR="0Ch"  # Chipset Temp
 --TEMP_SENSOR="1Dh"  # HD Controller Temp
-function hp_cpu1_temp(ip, user, pw) return tonumber(parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sdr type temperature | grep 04h | cut -d'|' -f5 | cut -d' ' -f2")) or 0 end
-function hp_cpu2_temp(ip, user, pw) return tonumber(parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sdr type temperature | grep 05h | cut -d'|' -f5 | cut -d' ' -f2")) or 0 end
-function hp_inlet_temp(ip, user, pw) return tonumber(parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sdr type temperature | grep 03h | cut -d'|' -f5 | cut -d' ' -f2")) or 0 end
-function hp_pch_temp(ip, user, pw) return tonumber(parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sdr type temperature | grep 0Ch | cut -d'|' -f5 | cut -d' ' -f2")) or 0 end
-function hp_fan_speed(ip, user, pw, fan)
-    local fanspeed = parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sensor reading " .. fan .. " | awk '{ print $NF }'")
-    local fs1, fs2 = fanspeed:match("([^.]+).([^.]+)")
-    return (tonumber(fs1 or 0) * 1000 + tonumber(fs2 or 0)) / 1000
-end
-function hp_pwr(ip, user, pw) return tonumber(parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sdr type current | cut -d'|' -f5 | cut -d' ' -f2")) or 0 end
+--function hp_cpu1_temp(ip, user, pw) return tonumber(parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sdr type temperature | grep 04h | cut -d'|' -f5 | cut -d' ' -f2")) or 0 end
+--function hp_cpu2_temp(ip, user, pw) return tonumber(parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sdr type temperature | grep 05h | cut -d'|' -f5 | cut -d' ' -f2")) or 0 end
+--function hp_inlet_temp(ip, user, pw) return tonumber(parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sdr type temperature | grep 03h | cut -d'|' -f5 | cut -d' ' -f2")) or 0 end
+--function hp_pch_temp(ip, user, pw) return tonumber(parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sdr type temperature | grep 0Ch | cut -d'|' -f5 | cut -d' ' -f2")) or 0 end
+--function hp_fan_speed(ip, user, pw, fan)
+--    local fanspeed = parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sensor reading " .. fan .. " | awk '{ print $NF }'")
+--    local fs1, fs2 = fanspeed:match("([^.]+).([^.]+)")
+--    return (tonumber(fs1 or 0) * 1000 + tonumber(fs2 or 0)) / 1000
+--end
+--function hp_pwr(ip, user, pw) return tonumber(parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sdr type current | cut -d'|' -f5 | cut -d' ' -f2")) or 0 end
 
 --Supermicro servers
 --TEMP_SENSOR="01h"  # CPU Temp
 --TEMP_SENSOR="0Ah"  # PCH Temp
 --TEMP_SENSOR="0Bh"  # System Temp
 --TEMP_SENSOR="0Ah"  # Peripheral Temp
-function sm_cpu_temp(ip, user, pw) return tonumber(parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sdr type temperature | grep 01h | cut -d'|' -f5 | cut -d' ' -f2")) or 0 end
-function sm_pch_temp(ip, user, pw) return tonumber(parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sdr type temperature | grep 0Ah | cut -d'|' -f5 | cut -d' ' -f2")) or 0 end
-function sm_fan_speed(ip, user, pw, fan) return tonumber(parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sensor reading " .. fan .. " | awk '{ print $NF }'")) or 0 end
+--function sm_cpu_temp(ip, user, pw) return tonumber(parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sdr type temperature | grep 01h | cut -d'|' -f5 | cut -d' ' -f2")) or 0 end
+--function sm_pch_temp(ip, user, pw) return tonumber(parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sdr type temperature | grep 0Ah | cut -d'|' -f5 | cut -d' ' -f2")) or 0 end
+--function sm_fan_speed(ip, user, pw, fan) return tonumber(parse("execi 60 ipmitool -C 3 -I lanplus -H " .. ip .. " -U " .. user .. " -L USER -P " .. pw .. " sensor reading " .. fan .. " | awk '{ print $NF }'")) or 0 end
 
-function server_hostname(server) return parse("execi 10 ssh " .. server .. " 'cat /proc/sys/kernel/hostname'") end
-function server_kernel(server) return parse("execi 10 ssh " .. server .. " 'uname -r'") end
-function server_os(server) return parse("execi 10 ssh " .. server .. " 'lsb_release -sd'") end
+--function server_hostname(server) return parse("execi 10 ssh " .. server .. " 'cat /proc/sys/kernel/hostname'") end
+--function server_kernel(server) return parse("execi 10 ssh " .. server .. " 'uname -r'") end
+--function server_os(server) return parse("execi 10 ssh " .. server .. " 'lsb_release -sd'") end
 -- https://stackoverflow.com/a/69261076
-function server_uptime(server) return parse("execi 10 ssh " .. server .. " uptime -p | sed 's/up\\s*//g' | sed 's/\\s*weeks/w/g' | sed 's/\\s*week/w/g' | sed 's/\\s*days/d/g' | sed 's/\\s*day/d/g' | sed 's/\\s*hours/h/g' | sed 's/\\s*minutes/m/g'") end
+--function server_uptime(server) return parse("execi 10 ssh " .. server .. " uptime -p | sed 's/up\\s*//g' | sed 's/\\s*weeks/w/g' | sed 's/\\s*week/w/g' | sed 's/\\s*days/d/g' | sed 's/\\s*day/d/g' | sed 's/\\s*hours/h/g' | sed 's/\\s*minutes/m/g'") end

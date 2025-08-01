@@ -158,7 +158,7 @@ function draw_info()
         "Load avg: " .. load_avg(),
         "OS:       " .. os(),
         "Kernel:   " .. kernel(),
-        string.format("Desktop:  %s/%s", desktop(), desktops()),
+        "Arch:     " .. arch(),
     }
     write_line_by_line(settings.text.endx, settings.info.y, settings.line.info_height, vals, main_text_color, 12, false)
 end

@@ -5,55 +5,26 @@ Based on Pomaria-Side Conky: <https://www.github.com/SZinedine/pomaria-side>
 ## Hardware specs
 
 PC:
-    - Lenovo P340
-    - CPU: Intel Xeon W-2150 (6-core, 12 threads)
-    - GPU1: Nvidia Quadro P620
+    - Lenovo P520
+    - CPU: Intel Xeon W-2135 (6-core, 12 threads)
+    - GPU1: Nvidia Quadro P1000
     - SSD: Samsung NVMe PCIe gen 3x4
-    - Nic: 1 Gbit (configured as bridge)
+    - Nic: 10 Gbit (configured as bridge for qemu and vlan for san)
 
 ## Download and Launch
 
 ```sh
 git clone https://www.github.com/joeplaa/joeplaa-conky
 cd joeplaa-conky
+
 conky -c conkyrc
+# or
+./start_conky.sh
 ```
 
 ## Edit / customize
 
 - Edit `settings.lua` to choose your network interface, internet speed and other settings.
-- Create `env.lua` and add server credentials and data
-
-    ```lua
-    serverlabel1 = "..."
-    hostname1 = "..."
-    host_ip1 = "..."
-    ipmi_ip1 = "..."
-    ipmi_user1 = "..."
-    ipmi_pass1 = "..."
-
-    serverlabel2 = "..."
-    hostname2 = "..."
-    host_ip2 = "..."
-    ipmi_ip2 = "..."
-    ipmi_user2 = "..."
-    ipmi_pass2 = "..."
-
-    serverlabel3 = "..."
-    hostname3 = "..."
-    host_ip3 = "..."
-    ipmi_ip3 = "..."
-    ipmi_user3 = "..."
-    ipmi_pass3 = "..."
-
-    serverlabel4 = "..."
-    hostname4 = "..."
-    host_ip4 = "..."
-    ipmi_ip4 = "..."
-    ipmi_user4 = "..."
-    ipmi_pass4 = "..."
-    ```
-
 - Edit `start.lua` to re-arrange.
 - Edit `own_window_argb_value = 64` in `conkyrc` to change transparency.
 
