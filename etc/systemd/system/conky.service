@@ -1,0 +1,16 @@
+[Unit]
+Description=Conky System Monitor
+After=network-online.target graphical.target
+Wants=network-online.target
+
+[Service]
+User=joep
+ExecStart=/usr/bin/conky -c /home/joep/repositories/joeplaa/joeplaa-conky/conkyrc
+WorkingDirectory=/home/joep/repositories/joeplaa/joeplaa-conky
+Environment="DISPLAY=:1"
+Restart=always
+RestartSec=3
+Type=simple
+
+[Install]
+WantedBy=graphical.target

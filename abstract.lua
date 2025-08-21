@@ -56,7 +56,7 @@ function draw_graph(data, max_value, table_length, blx, bly, red, green, blue, a
 end
 
 function ring_clockwise(x, y, radius, thickness, angle_begin, angle_end, value_str, max_value, fg_color)
-    local value = tonumber(value_str)
+    local value = tonumber(value_str) or 0
     if value > max_value then value = max_value end
 
     angle_begin = angle_begin * (2 * math.pi / 360) - (math.pi / 2)
@@ -76,7 +76,7 @@ end
 
 
 function ring_anticlockwise(x, y, radius, thickness, angle_begin, angle_end, value_str, max_value, fg_color)
-    local value = tonumber(value_str)
+    local value = tonumber(value_str) or 0
     if value > max_value then value = max_value end
 
     angle_begin = angle_begin * (2 * math.pi / 360) - (math.pi / 2)
@@ -96,7 +96,7 @@ end
 
 
 function rectangle_leftright(x, y, len, thick, value_str, max_value, color)
-    local value = tonumber(value_str)
+    local value = tonumber(value_str) or 0
     if value > max_value then value = max_value end
 
     cairo_set_source_rgba(cr, color_convert(main_bg, main_bg_alpha))
@@ -116,7 +116,7 @@ end
 
 
 function rectangle_bottomup(x, y, len, thick, value_str, max_value, color)
-    local value = tonumber(value_str)
+    local value = tonumber(value_str) or 0
     if value > max_value then value = max_value end
 
     cairo_set_source_rgba(cr, color_convert(main_bg, main_bg_alpha))
@@ -228,7 +228,7 @@ end
 -- return a color according to the provided value (threshold)
 -- the colors are defined in "settings.lua"
 function color_frompercent(percent)
-    local perc = tonumber(percent)
+    local perc = tonumber(percent) or 0
     if     perc > threshold_critical then return color_critical
     elseif perc > threshold_warning  then return color_warning
     else                                     return color_normal
@@ -270,7 +270,7 @@ function updates()              return parse("updates") end
 function kernel()               return parse("kernel") end                  --  ex: 5.10.32-1-lts
 function system_name()          return parse("sysname") end                 --  ex: Linux
 function hostname()             return parse("nodename") end                --  ex: Hostname
-function os()                   return parse("execi 86400 lsb_release -sd") end --  ex: Ubuntu 20.04.3 LTS
+function os_name()              return parse("execi 86400 lsb_release -sd") end --  ex: Ubuntu 20.04.3 LTS
 function arch()                 return parse("machine") end                 --  ex: x86_64
 --function desktops()             return parse("desktop_number") end          --  total number of desktops
 --function desktop()              return parse("desktop") end                 --  ex: 3 (current desktop)
@@ -315,17 +315,17 @@ function fs_free(fs)
     else                        return parse("fs_free " .. fs)
     end
 end
-function gpu_name(gpu)          return "NVIDIA " .. parse("exec nvidia-smi --query-gpu=gpu_name --format=csv | sed -n " .. gpu + 1 .. "p") end
-function gpu_temp(gpu)          return parse("execi 1 nvidia-smi --query-gpu=temperature.gpu --format=csv | sed -n " .. gpu + 1 .. "p") end
-function gpu_fanspeed(gpu)      return parse("execi 1 nvidia-smi --query-gpu=fan.speed --format=csv | sed -n " .. gpu + 1 .. "p | cut -d ' ' -f 1") end
-function gpu_utilization(gpu)   return parse("execi 1 nvidia-smi --query-gpu=utilization.gpu --format=csv | sed -n " .. gpu + 1 .. "p | cut -d ' ' -f 1") end
-function gpu_decode(gpu)        return parse("execi 1 nvidia-smi --query-gpu=utilization.decoder --format=csv | sed -n " .. gpu + 1 .. "p | cut -d ' ' -f 1") end
-function gpu_encode(gpu)        return parse("execi 1 nvidia-smi --query-gpu=utilization.encoder --format=csv | sed -n " .. gpu + 1 .. "p | cut -d ' ' -f 1") end
-function gpu_mem_util(gpu)      return parse("execi 1 nvidia-smi --query-gpu=utilization.memory --format=csv | sed -n " .. gpu + 1 .. "p | cut -d ' ' -f 1") end
-function gpu_mem_used(gpu)      return parse("execi 1 nvidia-smi --query-gpu=memory.used --format=csv | sed -n " .. gpu + 1 .. "p | cut -d ' ' -f 1") end
-function gpu_mem_total(gpu)     return parse("execi 1 nvidia-smi --query-gpu=memory.total --format=csv | sed -n " .. gpu + 1 .. "p | cut -d ' ' -f 1") end
-function gpu_power_draw(gpu)    return parse("execi 1 nvidia-smi --query-gpu=power.draw --format=csv | sed -n " .. gpu + 1 .. "p | cut -d ' ' -f 1") end
-function gpu_power_limit(gpu)   return parse("execi 1 nvidia-smi --query-gpu=power.limit --format=csv | sed -n " .. gpu + 1 .. "p | cut -d ' ' -f 1") end
+function gpu_name(gpu)          return "Nvidia " .. parse("exec /usr/bin/nvidia-smi --query-gpu=gpu_name --format=csv | sed -n " .. gpu + 2 .. "p") end
+function gpu_temp(gpu)          return parse("execi 1 /usr/bin/nvidia-smi --query-gpu=temperature.gpu --format=csv | sed -n " .. gpu + 2 .. "p") end
+function gpu_fanspeed(gpu)      return parse("execi 1 /usr/bin/nvidia-smi --query-gpu=fan.speed --format=csv | sed -n " .. gpu + 2 .. "p | cut -d ' ' -f 1") end
+function gpu_utilization(gpu)   return parse("execi 1 /usr/bin/nvidia-smi --query-gpu=utilization.gpu --format=csv | sed -n " .. gpu + 2 .. "p | cut -d ' ' -f 1") end
+function gpu_decode(gpu)        return parse("execi 1 /usr/bin/nvidia-smi --query-gpu=utilization.decoder --format=csv | sed -n " .. gpu + 2 .. "p | cut -d ' ' -f 1") end
+function gpu_encode(gpu)        return parse("execi 1 /usr/bin/nvidia-smi --query-gpu=utilization.encoder --format=csv | sed -n " .. gpu + 2 .. "p | cut -d ' ' -f 1") end
+function gpu_mem_util(gpu)      return parse("execi 1 /usr/bin/nvidia-smi --query-gpu=utilization.memory --format=csv | sed -n " .. gpu + 2 .. "p | cut -d ' ' -f 1") end
+function gpu_mem_used(gpu)      return parse("execi 1 /usr/bin/nvidia-smi --query-gpu=memory.used --format=csv | sed -n " .. gpu + 2 .. "p | cut -d ' ' -f 1") end
+function gpu_mem_total(gpu)     return parse("execi 1 /usr/bin/nvidia-smi --query-gpu=memory.total --format=csv | sed -n " .. gpu + 2 .. "p | cut -d ' ' -f 1") end
+function gpu_power_draw(gpu)    return parse("execi 1 /usr/bin/nvidia-smi --query-gpu=power.draw --format=csv | sed -n " .. gpu + 2 .. "p | cut -d ' ' -f 1") end
+function gpu_power_limit(gpu)   return parse("execi 1 /usr/bin/nvidia-smi --query-gpu=power.limit --format=csv | sed -n " .. gpu + 2 .. "p | cut -d ' ' -f 1") end
 -- function vm_used(vm)            return parse("execi 60 virsh vol-info " .. vm .. " --pool " .. pool_name .. " | grep Allocation | awk '{print$2 $3}'") end
 -- function vm_size(vm)            return parse("execi 60 virsh vol-info " .. vm .. " --pool " .. pool_name .. " | grep Capacity | awk '{print$2 $3}'") end
 -- function vm_used_perc(vm)
@@ -384,31 +384,44 @@ function diskio_read(device)    return parse("diskio_read " .. device) .. "/s" e
 function diskio_write(device)   return parse("diskio_write " .. device) .. "/s" end
 --function diskiograph(device)    return parse("diskiograph " .. device) .. "/s" end      --  device ex: /dev/sda
 function fetch_public_ip(type)
-    local po = nil
-    if type == 4 then
-        po = io.popen("curl -4 -s https://ipinfo.io/ip")
-        -- po = io.popen("curl -4 -s ifconfig.me/ip")
-        -- po = io.popen("curl -4 -s ident.me")
-        -- po = io.popen("curl -4 -s api.ipify.org")
-    else
-        po = io.popen("curl -s https://v6.ipinfo.io/ip")
+    local cmd = type == 4 and "/usr/bin/curl -m 2 -s https://ipinfo.io/ip" or "/usr/bin/curl -m 2 -s https://v6.ipinfo.io/ip"
+    -- local handle = io.popen(cmd)
+    local result = parse("execi 60 " .. cmd)
+    -- local result = ""
+    -- if handle ~= nil then
+    --     result = handle:read("*a")
+    --     handle:close()
+    -- end
+    -- Log result for debugging
+    local log = io.open("/tmp/conky_curl_debug.log", "a")
+    if log then
+        log:write(os.date() .. " fetch_public_ip(" .. tostring(type) .. "): " .. result .. "\n")
+        log:close()
     end
----@diagnostic disable-next-line: need-check-nil
-    local content = po:read("*a")
-    if content == nil or content == "" then
+    if result == nil or result == "" then
         return "None"
     else
-        return content
+        return result
     end
 end
 function fetch_vpn_ip(type)
-    local po = io.popen("curl -" .. type .. " -s ident.me")
----@diagnostic disable-next-line: need-check-nil
-    local content = po:read("*a")
-    if content == nil or content == "" then
+    -- local handle = io.popen("/usr/bin/curl -" .. type .. " -s ident.me")
+    local result = parse("execi 60 /usr/bin/curl -m 2 -" .. type .. " -s ident.me")
+    -- local result = ""
+    -- if handle ~= nil then
+    --     result = handle:read("*a")
+    --     handle:close()
+    -- end
+    -- Log result for debugging
+    local log = io.open("/tmp/conky_curl_debug.log", "a")
+    if log then
+        log:write(os.date() .. " fetch_vpn_ip(" .. tostring(type) .. "): " .. result .. "\n")
+        log:close()
+    end
+    if result == nil or result == "" then
         return "None"
     else
-        return content
+        return result
     end
 end
 

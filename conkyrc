@@ -6,7 +6,7 @@ conky.config = {
     gap_y = 32,
     gap_x = 0,
     -- --------------- Window Settings
-    background = true,
+    background = false,
     double_buffer = true,
     own_window = true,
     own_window_class = 'Conky',
@@ -27,5 +27,4 @@ conky.config = {
     lua_draw_hook_pre = "main",
     update_interval = 1,
 }
-
 conky.text = [[]]
