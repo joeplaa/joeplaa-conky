@@ -1,0 +1,14 @@
+[Unit]
+Description=Conky System Monitor
+After=graphical-session.target
+Wants=graphical-session.target
+
+[Service]
+ExecStart=/home/joep/repositories/joeplaa/joeplaa-conky/start_conky.sh
+WorkingDirectory=/home/joep/repositories/joeplaa/joeplaa-conky
+Restart=always
+RestartSec=3
+Type=simple
+
+[Install]
+WantedBy=default.target
