@@ -5,11 +5,12 @@ Based on Pomaria-Side Conky: <https://www.github.com/SZinedine/pomaria-side>
 ## Hardware specs
 
 PC:
-    - Lenovo P520
-    - CPU: Intel Xeon W-2135 (6-core, 12 threads)
-    - GPU1: Nvidia Quadro P1000
-    - SSD: Samsung NVMe PCIe gen 3x4
-    - Nic: 10 Gbit (configured as bridge for qemu and vlan for san)
+
+- Lenovo P520
+- CPU: Intel Xeon W-2135 (6-core, 12 threads)
+- GPU1: Nvidia Quadro P1000
+- SSD: Samsung NVMe PCIe gen 3x4
+- Nic: 10 Gbit (configured as bridge for qemu and vlan for san)
 
 ## Download and Launch
 
@@ -37,6 +38,13 @@ Add a new program:
 - Name: `Conky PC`
 - Command: `<path to repository>/joeplaa-conky/start_conky.sh`
 - Comment: leave blank or enter whatever you like
+
+Or use `systemd`:
+
+- Edit: `conky.service`; edit path to `start_conky.sh` and set display number, find with `echo $DISPLAY`
+- Create: `~/.config/systemd/user/conky.service` and copy content
+- Enable: `systemctl enable conky.service`
+- Start: `systemctl start conky.service`
 
 ## Dependencies
 
