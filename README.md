@@ -4,9 +4,7 @@ Based on Pomaria-Side Conky: <https://www.github.com/SZinedine/pomaria-side>
 
 ## Hardware specs
 
-PC:
-
-- Lenovo P520
+- PC: Lenovo P520
 - CPU: Intel Xeon W-2135 (6-core, 12 threads)
 - GPU1: Nvidia Quadro P1000
 - SSD: Samsung NVMe PCIe gen 3x4
