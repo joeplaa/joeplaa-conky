@@ -36,7 +36,7 @@ You can find out by executing `ifconfig` or `ip link`.
 It might be "wlan0", "eth0", "wlp3s0" or something else
 ]]
 net_interface  = "br0" --LAN interface
-net_interface2 = "vlan80" --SAN interface
+net_interface2 = "vlan30" --SAN interface
 
 --[[
 this depends on your own internet speed
