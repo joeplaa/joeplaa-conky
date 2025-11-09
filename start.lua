@@ -351,10 +351,10 @@ function draw_net()
 
     -- Network info
     local vals = {
-        "Total down (LAN): " .. download_total(),
-        "Total up (LAN):   " .. upload_total(),
-        "Total down (SAN): " .. download_total2(),
-        "Total up (SAN):   " .. upload_total2(),
+        "Total down (VLAN20): " .. download_total(),
+        "Total up (VLAN20):   " .. upload_total(),
+        "Total down (VLAN30): " .. download_total2(),
+        "Total up (VLAN30):   " .. upload_total2(),
     }
 
     local prefix = public_ip6:sub(1, 15)
@@ -401,22 +401,22 @@ function draw_net()
     rectangle_rightleft(settings.line.startx, settings.net.y_speed_down, settings.line.width_2, settings.line.thickness,
         downraw, net_rate_maximum, color_frompercent(downraw / net_rate_maximum))
     write(settings.text.centerxr, settings.net.y_speed_down - settings.line.height, downspeed, 12, main_text_color)
-    write(settings.text.startx, settings.net.y_speed_down - settings.line.height, "Down (LAN)", 12, main_text_color, "r")
+    write(settings.text.startx, settings.net.y_speed_down - settings.line.height, "Down (VLAN20)", 12, main_text_color, "r")
 
     rectangle_rightleft(settings.line.startx, settings.net.y_speed_up, settings.line.width_2, settings.line.thickness,
         upraw, net_rate_maximum, color_frompercent(upraw / net_rate_maximum))
     write(settings.text.centerxr, settings.net.y_speed_up - settings.line.height, upspeed, 12, main_text_color)
-    write(settings.text.startx, settings.net.y_speed_up - settings.line.height, "Up (LAN)", 12, main_text_color, "r")
+    write(settings.text.startx, settings.net.y_speed_up - settings.line.height, "Up (VLAN20)", 12, main_text_color, "r")
 
     rectangle_rightleft(settings.line.startx, settings.net.y_speed_down2, settings.line.width_2, settings.line.thickness,
         downraw2, net_rate_maximum, color_frompercent(downraw2 / net_rate_maximum))
     write(settings.text.centerxr, settings.net.y_speed_down2 - settings.line.height, downspeed2, 12, main_text_color)
-    write(settings.text.startx, settings.net.y_speed_down2 - settings.line.height, "Down (SAN)", 12, main_text_color, "r")
+    write(settings.text.startx, settings.net.y_speed_down2 - settings.line.height, "Down (VLAN30)", 12, main_text_color, "r")
 
     rectangle_rightleft(settings.line.startx, settings.net.y_speed_up2, settings.line.width_2, settings.line.thickness,
         upraw2, net_rate_maximum, color_frompercent(upraw2 / net_rate_maximum))
     write(settings.text.centerxr, settings.net.y_speed_up2 - settings.line.height, upspeed2, 12, main_text_color)
-    write(settings.text.startx, settings.net.y_speed_up2 - settings.line.height, "Up (SAN)", 12, main_text_color, "r")
+    write(settings.text.startx, settings.net.y_speed_up2 - settings.line.height, "Up (VLAN30)", 12, main_text_color, "r")
 end
 
 function draw_data()
